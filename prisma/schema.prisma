@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id               Int          @id @default(autoincrement())
+  name             String
+  sureName         String
+  customerType CustomerType
+  
+  memberships      Membership[]
+  dailyPasses      DailyPass[]
+
+  @@map("customer")
+}
+
+model Membership {
+  id         Int     @id @default(autoincrement())
+  customerId Int
+  email            String?         @unique
+  phone            String?
+  startDate  DateTime
+  endDate    DateTime
+  price      Float
+  status     MembershipStatus     @default(ACTIVO) 
+
+  customer   Customer   @relation(fields: [customerId], references: [id])
+  @@map("membership")
+
+}
+
+model DailyPass {
+  id         Int     @id @default(autoincrement())
+  customerId Int
+  accessDate DateTime   @default(now())
+  price      Float      
+
+  customer   Customer   @relation(fields: [customerId], references: [id])
+  @@map("dailypass")
+
+}
+
+enum CustomerType {
+  MEMBRESIA 
+  PASE_DIARIO
+}
+
+enum MembershipStatus {
+  ACTIVO 
+  CANCELADO
+  PENDIENTE
+}
