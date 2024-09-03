@@ -6,6 +6,7 @@ export const useCustomerService = () => {
   const apiResource = "/api/customer";
   const membershipResource = "/api/membership";
   const dailyPassResource = "/api/dailypass";
+  const servicePriceResource = "/api/serviceprice";
 
   const createCustomer = async (customerData: Customer) => {
     const dataToSend = {
@@ -114,6 +115,20 @@ export const useCustomerService = () => {
       undefined,
       "Error fetching daily passes"
     );
+
+    // Nuevas funciones para obtener los precios
+  };
+
+  const getServicePrice = async (name: string) => {
+    const url = `${servicePriceResource}/${name}`;
+
+    const reponse = await executeFetch(
+      url,
+      "GET",
+      undefined,
+      "Error fetching daily passes price"
+    );
+    return reponse;
   };
 
   return {
@@ -130,5 +145,6 @@ export const useCustomerService = () => {
     canceledMembership,
     renewMembership,
     pendingMembership,
+    getServicePrice,
   };
 };

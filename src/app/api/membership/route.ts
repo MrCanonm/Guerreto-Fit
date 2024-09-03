@@ -8,15 +8,24 @@ export async function GET() {
     const memberships = await prisma.membership.findMany({
       include: {
         customer: true,
+        servicePrice: true,
+      },
+      where: {
+        NOT: {
+          status: "CANCELADO",
+        },
       },
     });
     return NextResponse.json(
       memberships.map((membership) => ({
         ...membership.customer,
         membership: {
+          dni: membership.dni,
+          email: membership.email,
+          phone: membership.phone,
+          servicePrice: membership.servicePrice.monto,
           startDate: membership.startDate,
           endDate: membership.endDate,
-          price: membership.price,
           status: membership.status,
         },
       })),

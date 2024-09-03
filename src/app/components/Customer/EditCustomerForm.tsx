@@ -45,7 +45,7 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-8 text-gray-600">Nuevo cliente</h1>
+      <h1 className="text-xl font-bold mb-8 text-gray-600">Nuevo Pago</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -58,7 +58,6 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             {...register("name", {
               required: "Este campo es requerido",
-              minLength: { value: 5, message: "Minimo 5 caracteres" },
             })}
           />
           {errors.name && (
@@ -101,28 +100,15 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({
         {selectedCustomerType === CustomerType.MEMBRESIA && (
           <>
             <div>
-              <label className="block">Estado</label>
-              <Controller
-                control={control}
-                name="membership.status"
-                rules={{ required: "Este campo es requerido" }}
-                render={({ field }) => (
-                  <Dropdown
-                    options={[
-                      MembershipStatus.ACTIVO,
-                      MembershipStatus.CANCELADO,
-                      MembershipStatus.PENDIENTE,
-                    ]}
-                    onSelect={(type) => {
-                      field.onChange(type as MembershipStatus);
-                    }}
-                    placeholder="Select Payment Type"
-                  />
-                )}
+              <label className="block">Cedula</label>
+              <input
+                className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
+                {...register("membership.dni", {})}
+                type="text"
               />
-              {errors.membership?.status && (
+              {errors.membership?.dni && (
                 <span className="text-red-600">
-                  {errors.membership.status.message}
+                  {errors.membership?.dni.message}
                 </span>
               )}
             </div>
@@ -208,22 +194,6 @@ const EditCustomerForm: React.FC<EditCustomerFormProps> = ({
 
         {selectedCustomerType === CustomerType.PASE_DIARIO && (
           <>
-            <div>
-              <label className="block">Fecha</label>
-              <input
-                type="date"
-                className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("dailyPass.accessDate", {
-                  required: "Este campo es requerido",
-                })}
-              />
-              {errors.dailyPass?.accessDate && (
-                <span className="text-red-600">
-                  {errors.dailyPass.accessDate.message}
-                </span>
-              )}
-            </div>
-
             <div>
               <label className="block">Precio del Pase Diario</label>
               <input

@@ -35,7 +35,7 @@ export async function PATCH() {
         },
       },
       data: {
-        status: MembershipStatus.PENDIENTE,
+        status: MembershipStatus.VENCIDA,
       },
     });
 

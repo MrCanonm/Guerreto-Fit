@@ -2,7 +2,10 @@
 
 import { useCustomerService } from "@/services/customer";
 import { useEffect, useState } from "react";
-import { Customer } from "../components/Customer/customerInterfaces";
+import {
+  Customer,
+  CustomerType,
+} from "../components/Customer/customerInterfaces";
 import CustomButton from "@/app/components/Common/CustomButton";
 import { useNotification } from "../components/Common/Notification";
 import { SubmitHandler } from "react-hook-form";
@@ -23,8 +26,6 @@ import EditCustomerForm from "../components/Customer/EditCustomerForm";
 const CustomerPage: React.FC = () => {
   const {
     data: customers,
-    loading,
-    error,
     getAllCustomers,
     createCustomer,
     updateCustomer,
@@ -34,14 +35,7 @@ const CustomerPage: React.FC = () => {
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
 
-  const {
-    showSuccess,
-    showError,
-    showWarning,
-    showInfo,
-    showLoading,
-    dismiss,
-  } = useNotification();
+  const { showSuccess, showError, showLoading, dismiss } = useNotification();
 
   useEffect(() => {
     getAllCustomers();
@@ -94,8 +88,28 @@ const CustomerPage: React.FC = () => {
   const columns: ColumnDef<Customer>[] = [
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
-    { accessorKey: "email", header: "Correo" },
-    { accessorKey: "phone", header: "Cell/Tel" },
+
+    {
+      header: "Fecha",
+      cell: ({ row }) => {
+        const customerType = row.original.customerType;
+
+        if (customerType === CustomerType.MEMBRESIA) {
+          const membership = row.original.membership;
+          return membership
+            ? new Date(membership.startDate).toLocaleDateString()
+            : "N/A";
+        } else if (customerType === CustomerType.PASE_DIARIO) {
+          const dailyPass = row.original.dailyPass;
+          return dailyPass
+            ? new Date(dailyPass.accessDate).toLocaleDateString()
+            : "N/A";
+        } else {
+          return "N/A";
+        }
+      },
+    },
+
     { accessorKey: "customerType", header: "Membresia" },
     {
       id: "actions",
@@ -121,13 +135,13 @@ const CustomerPage: React.FC = () => {
   return (
     <div>
       <div className="w-full flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold text-gray-700">Gestionar Clientes</h1>
+        <h1 className="text-2xl font-bold text-gray-700">Gestionar Pagos</h1>
 
         <CustomButton
           variant="primary"
           onClick={() => setCreateModalIsOpen(true)}
         >
-          Agregar Cliente
+          Agregar Pago
         </CustomButton>
       </div>
 

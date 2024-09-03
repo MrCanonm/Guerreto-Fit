@@ -9,11 +9,12 @@ interface Params {
     id: string;
   };
 }
+
 export async function PATCH(request: Request, { params }: Params) {
   const { id } = params; // Esto puede ser el customerId que llega en los params
 
   try {
-    // Busca la membresía actual para obtener la fecha de vencimiento actual
+    // Busca la membresía actual para obtener la fecha de vencimiento actual y el estado
     const membership = await prisma.membership.findFirst({
       where: { customerId: Number(id) },
     });
@@ -29,12 +30,18 @@ export async function PATCH(request: Request, { params }: Params) {
     const newExpirationDate = new Date(membership.endDate);
     newExpirationDate.setDate(newExpirationDate.getDate() + 30);
 
-    // Actualiza la fecha de vencimiento de la membresía
+    // Define el nuevo estado basado en el estado actual
+    let newStatus = membership.status;
+    if (membership.status === MembershipStatus.VENCIDA) {
+      newStatus = MembershipStatus.ACTIVO;
+    }
+
+    // Actualiza la fecha de vencimiento y el estado de la membresía
     const updatedMembership = await prisma.membership.updateMany({
       where: { customerId: Number(id) },
       data: {
         endDate: newExpirationDate,
-        status: MembershipStatus.ACTIVO,
+        status: newStatus,
       },
     });
 

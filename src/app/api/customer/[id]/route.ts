@@ -38,15 +38,7 @@ export async function PATCH(
   console.log("PATCH request received");
   try {
     const body = await request.json();
-    const {
-      name,
-      sureName,
-      email,
-      phone,
-      customerType,
-      membership,
-      dailyPasses,
-    } = body;
+    const { name, sureName, customerType, membership, dailyPasses } = body;
 
     // Verifica si el cliente existe
     const customer = await prisma.customer.findUnique({

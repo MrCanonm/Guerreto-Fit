@@ -75,26 +75,21 @@ const DailyPassCustomerPage: React.FC = () => {
   const columns: ColumnDef<Customer>[] = [
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
-    { accessorKey: "email", header: "Correo" },
-    { accessorKey: "phone", header: "Cell/Tel" },
-    { accessorKey: "customerType", header: "Pase Diario" },
     {
-      accessorKey: "dailyPass.accessDate",
+      header: "Monto",
+      cell: ({ row }) => {
+        const dailyPass = row.original.dailyPass;
+        return dailyPass ? formatter.format(dailyPass.servicePrice) : "N/A";
+      },
+    },
+
+    {
       header: "Fecha",
       cell: ({ row }) => {
         const dailyPass = row.original.dailyPass;
         return dailyPass
           ? new Date(dailyPass.accessDate).toLocaleString()
           : "N/A";
-      },
-    },
-
-    {
-      accessorKey: "dailyPass.price",
-      header: "Valor",
-      cell: ({ row }) => {
-        const dailyPass = row.original.dailyPass;
-        return dailyPass ? formatter.format(dailyPass.price) : "N/A";
       },
     },
 

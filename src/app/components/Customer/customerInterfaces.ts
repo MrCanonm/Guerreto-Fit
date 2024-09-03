@@ -2,10 +2,11 @@ export enum CustomerType {
   MEMBRESIA = "MEMBRESIA",
   PASE_DIARIO = "PASE_DIARIO",
 }
+
 export enum MembershipStatus {
   ACTIVO = "ACTIVO",
   CANCELADO = "CANCELADO",
-  PENDIENTE = "PENDIENTE",
+  VENCIDA = "VENCIDA",
 }
 
 export type Customer = {
@@ -20,17 +21,33 @@ export type Customer = {
 export type Membership = {
   id: number;
   customerId: number;
+  dni: string;
   email?: string;
   phone?: string;
   startDate: Date;
   endDate: Date;
-  price: number;
   status: MembershipStatus;
+  servicePriceId: number;
+  servicePrice: ServicePrice;
 };
 
 export type DailyPass = {
   id: number;
   customerId: number;
   accessDate: Date;
-  price: number;
+  servicePriceId: number;
+  servicePrice: ServicePrice;
+};
+
+export type ServicePrice = {
+  id: number;
+  serviceId: number;
+  monto: number;
+  fecha: Date;
+  services: Service;
+};
+
+export type Service = {
+  id: number;
+  serviceName: string;
 };

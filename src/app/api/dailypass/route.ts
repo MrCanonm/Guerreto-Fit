@@ -8,6 +8,7 @@ export async function GET() {
     const dailyPass = await prisma.dailyPass.findMany({
       include: {
         customer: true,
+        servicePrice: true,
       },
     });
     return NextResponse.json(
@@ -15,7 +16,7 @@ export async function GET() {
         ...dailyPass.customer,
         dailyPass: {
           accessDate: dailyPass.accessDate,
-          price: dailyPass.price,
+          servicePrice: dailyPass.servicePrice.monto,
         },
       })),
       { status: 200 }

@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,50 +8,78 @@ datasource db {
 }
 
 model Customer {
-  id               Int          @id @default(autoincrement())
-  name             String
-  sureName         String
+  id           Int          @id @default(autoincrement())
+  name         String
+  sureName     String
+
+
   customerType CustomerType
-  
-  memberships      Membership[]
-  dailyPasses      DailyPass[]
+  dailyPass  DailyPass?
+  membership  Membership?
 
   @@map("customer")
 }
 
 model Membership {
-  id         Int     @id @default(autoincrement())
-  customerId Int
-  email            String?         @unique
-  phone            String?
-  startDate  DateTime
-  endDate    DateTime
-  price      Float
-  status     MembershipStatus     @default(ACTIVO) 
+  id             Int               @id @default(autoincrement())
+  customerId     Int               @unique
+  servicePriceId Int               
+  email          String?           
+  phone          String?
+  startDate      DateTime
+  endDate        DateTime
+  dni            String            
+  status         MembershipStatus @default(ACTIVO)
 
-  customer   Customer   @relation(fields: [customerId], references: [id])
+  customer       Customer          @relation(fields: [customerId], references: [id])
+  servicePrice   ServicePrices     @relation(fields: [servicePriceId], references: [id])
+  
+
+
   @@map("membership")
-
 }
 
 model DailyPass {
-  id         Int     @id @default(autoincrement())
-  customerId Int
-  accessDate DateTime   @default(now())
-  price      Float      
+  id             Int               @id @default(autoincrement())
+  customerId     Int               @unique
+  servicePriceId Int               
+  accessDate     DateTime          @default(now())
 
-  customer   Customer   @relation(fields: [customerId], references: [id])
+  customer       Customer          @relation(fields: [customerId], references: [id])
+  servicePrice   ServicePrices     @relation(fields: [servicePriceId], references: [id])
+
   @@map("dailypass")
+}
 
+model ServicePrices {
+  id          Int              @id @default(autoincrement())
+  serviceId Int
+  monto Float
+  fecha DateTime
+
+  service Services @relation(fields: [serviceId], references: [id])
+  dailyPasses DailyPass[]
+  memberships Membership[]
+
+  @@map("service_prices")
+}
+
+model Services {
+  id Int                        @id @default(autoincrement())
+  serviceName String
+
+  servicePrices ServicePrices[]
+
+  @@map("services")
 }
 
 enum CustomerType {
-  MEMBRESIA 
+  MEMBRESIA
   PASE_DIARIO
 }
 
 enum MembershipStatus {
-  ACTIVO 
+  ACTIVO
   CANCELADO
-  PENDIENTE
+  VENCIDA
 }

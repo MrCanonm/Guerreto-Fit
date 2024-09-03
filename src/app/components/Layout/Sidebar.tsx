@@ -96,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
     // Lógica de logout
   };
 
-  const user = { name: "Roberto Mejía" };
+  const user = { name: "Guerrero Fit" };
 
   return (
     <aside
@@ -110,7 +110,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
           onClick={toggleSidebar}
         >
           <Image
-            src="/images/storage_icon.png"
+            src="/images/guerrero_fit-rbg.png"
             alt="Storage Icon"
             width={isExpanded ? 60 : 40}
             height={isExpanded ? 60 : 40}

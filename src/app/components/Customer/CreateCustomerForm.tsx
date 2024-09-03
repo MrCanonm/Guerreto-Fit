@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Customer, CustomerType, MembershipStatus } from "./customerInterfaces";
+import { Customer, CustomerType, ServicePrice } from "./customerInterfaces";
 import Dropdown from "../Common/Dropdown";
 import CustomButton from "../Common/CustomButton";
+import { useCustomerService } from "@/services/customer";
 
 const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
   onSubmit,
@@ -15,23 +16,40 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     reset,
     control,
     formState: { errors },
-  } = useForm<Customer>();
+  } = useForm<Customer & ServicePrice>({});
+
+  const { getServicePrice } = useCustomerService();
 
   const [selectedCustomerType, setSelectedCustomerType] =
     useState<CustomerType | null>(null);
+  const [dailyPassPrice, setDailyPassPrice] = useState<number | null>(null);
 
   const handleCancel = () => {
     reset();
     setSelectedCustomerType(null);
   };
 
-  const handleCustomerTypeChange = (type: CustomerType) => {
+  const handleCustomerTypeChange = async (type: CustomerType) => {
     setSelectedCustomerType(type);
+
+    if (type === CustomerType.PASE_DIARIO) {
+      try {
+        const priceData = await getServicePrice("PASEDIARIO");
+        setDailyPassPrice(priceData.monto);
+      } catch (error) {
+        console.error("Error fetching daily pass price", error);
+      }
+    } else if (type === CustomerType.MEMBRESIA) {
+      const priceData = await getServicePrice("MEMBRESIA");
+      setDailyPassPrice(priceData.monto);
+    } else {
+      setDailyPassPrice(null);
+    }
   };
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-8 text-gray-600">Nuevo cliente</h1>
+      <h1 className="text-xl font-bold mb-8 text-gray-600">Nuevo Pago</h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -86,28 +104,15 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
         {selectedCustomerType === CustomerType.MEMBRESIA && (
           <>
             <div>
-              <label className="block">Estado</label>
-              <Controller
-                control={control}
-                name="membership.status"
-                rules={{ required: "Este campo es requerido" }}
-                render={({ field }) => (
-                  <Dropdown
-                    options={[
-                      MembershipStatus.ACTIVO,
-                      MembershipStatus.CANCELADO,
-                      MembershipStatus.PENDIENTE,
-                    ]}
-                    onSelect={(type) => {
-                      field.onChange(type as MembershipStatus);
-                    }}
-                    placeholder="Select Payment Type"
-                  />
-                )}
+              <label className="block">Cedula</label>
+              <input
+                className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
+                {...register("membership.dni", {})}
+                type="text"
               />
-              {errors.membership?.status && (
+              {errors.membership?.dni && (
                 <span className="text-red-600">
-                  {errors.membership.status.message}
+                  {errors.membership?.dni.message}
                 </span>
               )}
             </div>
@@ -173,59 +178,34 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
             </div>
 
             <div>
-              <label className="block">Precio</label>
+              <label className="block">Precio de la Membresia</label>
               <input
                 type="number"
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.price", {
-                  required: "Este campo es requerido",
-                  min: { value: 0, message: "Debe ser un valor positivo" },
-                })}
+                value={dailyPassPrice ?? ""}
+                readOnly
               />
-              {errors.membership?.price && (
-                <span className="text-red-600">
-                  {errors.membership.price.message}
-                </span>
+              {errors.monto && (
+                <span className="text-red-600">{errors.monto.message}</span>
               )}
             </div>
           </>
         )}
 
         {selectedCustomerType === CustomerType.PASE_DIARIO && (
-          <>
-            <div>
-              <label className="block">Fecha</label>
-              <input
-                type="datetime-local"
-                className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("dailyPass.accessDate", {
-                  required: "Este campo es requerido",
-                })}
-              />
-              {errors.dailyPass?.accessDate && (
-                <span className="text-red-600">
-                  {errors.dailyPass.accessDate.message}
-                </span>
-              )}
-            </div>
-
-            <div>
-              <label className="block">Precio del Pase Diario</label>
-              <input
-                type="number"
-                className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("dailyPass.price", {
-                  required: "Este campo es requerido",
-                  min: { value: 0, message: "Debe ser un valor positivo" },
-                })}
-              />
-              {errors.dailyPass?.price && (
-                <span className="text-red-600">
-                  {errors.dailyPass.price.message}
-                </span>
-              )}
-            </div>
-          </>
+          <div>
+            <label className="block">Precio del Pase Diario</label>
+            <input
+              type="number"
+              className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
+              {...register("dailyPass.servicePriceId")}
+              value={dailyPassPrice ?? ""}
+              readOnly
+            />
+            {errors.monto && (
+              <span className="text-red-600">{errors.monto.message}</span>
+            )}
+          </div>
         )}
 
         <div className="col-span-2 flex justify-end space-x-4">

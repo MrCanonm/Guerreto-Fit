@@ -120,46 +120,53 @@ const MembershipCustomerPage: React.FC = () => {
   const columns: ColumnDef<Customer>[] = [
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
-    { accessorKey: "email", header: "Correo" },
-    { accessorKey: "phone", header: "Cell/Tel" },
-    { accessorKey: "customerType", header: "Membresia" },
     {
-      accessorKey: "membership.startDate",
+      header: "Correo",
+      cell: ({ row }) => {
+        const membership = row.original.membership;
+        return membership ? membership.email : "N/A";
+      },
+    },
+    {
+      header: "Cell/Tel",
+      cell: ({ row }) => {
+        const membership = row.original.membership;
+        return membership ? membership.phone : "N/A";
+      },
+    },
+
+    {
+      header: "Monto",
+      cell: ({ row }) => {
+        const membership = row.original.membership;
+        return membership ? formatter.format(membership.servicePrice) : "N/A";
+      },
+    },
+    {
       header: "Fecha de Inicio",
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership
-          ? new Date(membership.startDate).toLocaleDateString()
+          ? new Date(membership.startDate).toLocaleString()
           : "N/A";
       },
     },
     {
-      accessorKey: "membership.endDate",
       header: "Fecha de Vencimiento",
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership
-          ? new Date(membership.endDate).toLocaleDateString()
+          ? new Date(membership.endDate).toLocaleString()
           : "N/A";
       },
     },
     {
-      accessorKey: "membership.price",
-      header: "Valor",
-      cell: ({ row }) => {
-        const membership = row.original.membership;
-        return membership ? formatter.format(membership.price) : "N/A";
-      },
-    },
-    {
-      accessorKey: "membership.status",
       header: "Estado",
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership ? membership.status : "N/A";
       },
     },
-
     {
       id: "actions",
       header: "Acciones",
