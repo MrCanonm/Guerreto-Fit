@@ -78,7 +78,9 @@ const DailyPassCustomerPage: React.FC = () => {
       header: "Monto",
       cell: ({ row }) => {
         const dailyPass = row.original.dailyPass;
-        return dailyPass ? formatter.format(dailyPass.servicePrice) : "N/A";
+        return dailyPass
+          ? formatter.format(dailyPass.servicePrice.monto)
+          : "N/A";
       },
     },
 

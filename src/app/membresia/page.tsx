@@ -138,7 +138,9 @@ const MembershipCustomerPage: React.FC = () => {
       header: "Monto",
       cell: ({ row }) => {
         const membership = row.original.membership;
-        return membership ? formatter.format(membership.servicePrice) : "N/A";
+        return membership
+          ? formatter.format(membership.servicePrice.monto)
+          : "N/A";
       },
     },
     {

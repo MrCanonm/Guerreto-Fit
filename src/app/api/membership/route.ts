@@ -23,7 +23,7 @@ export async function GET() {
           dni: membership.dni,
           email: membership.email,
           phone: membership.phone,
-          servicePrice: membership.servicePrice.monto,
+          servicePrice: membership.servicePrice,
           startDate: membership.startDate,
           endDate: membership.endDate,
           status: membership.status,

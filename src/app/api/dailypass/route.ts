@@ -16,7 +16,7 @@ export async function GET() {
         ...dailyPass.customer,
         dailyPass: {
           accessDate: dailyPass.accessDate,
-          servicePrice: dailyPass.servicePrice.monto,
+          servicePrice: dailyPass.servicePrice,
         },
       })),
       { status: 200 }
