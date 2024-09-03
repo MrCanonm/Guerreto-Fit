@@ -13,15 +13,12 @@ import { DataTable } from "@/app/components/Common/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   Dropdown,
-  DropdownContainer,
-  DropdownItem,
   DropdownTrigger,
 } from "@/app/components/Common/dataTable/Dropdown";
 import { FaEllipsisH } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Modal from "../components/Common/Modal";
 import CreateCustomerForm from "../components/Customer/CreateCustomerForm";
-import EditCustomerForm from "../components/Customer/EditCustomerForm";
 
 const CustomerPage: React.FC = () => {
   const {
@@ -122,11 +119,6 @@ const CustomerPage: React.FC = () => {
               <span className="sr-only">Acciones</span>
             </Button>
           </DropdownTrigger>
-          <DropdownContainer>
-            <DropdownItem onClick={() => handleEditCustomer(row.original)}>
-              Editar
-            </DropdownItem>
-          </DropdownContainer>
         </Dropdown>
       ),
     },
@@ -151,10 +143,6 @@ const CustomerPage: React.FC = () => {
 
       <Modal isOpen={createModalIsOpen} onClose={handleModalClose}>
         <CreateCustomerForm onSubmit={onSubmit} />
-      </Modal>
-
-      <Modal isOpen={editModalIsOpen} onClose={handleModalClose}>
-        <EditCustomerForm initialData={currentCustomer} onSubmit={onSubmit} />
       </Modal>
     </div>
   );

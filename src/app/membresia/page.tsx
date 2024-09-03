@@ -16,7 +16,6 @@ import {
 import { FaEllipsisH } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Modal from "../components/Common/Modal";
-import EditCustomerForm from "../components/Customer/EditCustomerForm";
 import { formatter } from "../components/utils/fomartValue";
 
 const MembershipCustomerPage: React.FC = () => {
@@ -179,9 +178,6 @@ const MembershipCustomerPage: React.FC = () => {
             </Button>
           </DropdownTrigger>
           <DropdownContainer>
-            <DropdownItem onClick={() => handleEditCustomer(row.original)}>
-              Editar
-            </DropdownItem>
             <DropdownItem
               onClick={() => handleCancelMembership(row.original.id)}
             >
@@ -209,10 +205,6 @@ const MembershipCustomerPage: React.FC = () => {
       <hr className="my-4" />
 
       <DataTable columns={columns} data={customers || []} />
-
-      <Modal isOpen={editModalIsOpen} onClose={handleModalClose}>
-        <EditCustomerForm initialData={currentCustomer} onSubmit={onSubmit} />
-      </Modal>
     </div>
   );
 };

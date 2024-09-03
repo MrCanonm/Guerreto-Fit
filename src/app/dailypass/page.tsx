@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Customer } from "../components/Customer/customerInterfaces";
 import { useNotification } from "../components/Common/Notification";
 import Modal from "../components/Common/Modal";
-import EditCustomerForm from "../components/Customer/EditCustomerForm";
 import { formatter } from "../components/utils/fomartValue";
 
 const DailyPassCustomerPage: React.FC = () => {
@@ -125,10 +124,6 @@ const DailyPassCustomerPage: React.FC = () => {
       <hr className="my-4" />
 
       <DataTable columns={columns} data={customers || []} />
-
-      <Modal isOpen={editModalIsOpen} onClose={handleModalClose}>
-        <EditCustomerForm initialData={currentCustomer} onSubmit={onSubmit} />
-      </Modal>
     </div>
   );
 };
