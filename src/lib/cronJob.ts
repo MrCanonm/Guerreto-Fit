@@ -30,7 +30,7 @@ async function updateExpiredMemberships() {
         },
       },
       data: {
-        status: MembershipStatus.PENDIENTE,
+        status: MembershipStatus.VENCIDA,
       },
     });
 
