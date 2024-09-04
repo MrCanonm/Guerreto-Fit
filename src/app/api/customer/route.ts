@@ -10,8 +10,16 @@ export async function GET() {
   try {
     const customers = await prisma.customer.findMany({
       include: {
-        membership: true,
-        dailyPass: true,
+        membership: {
+          include: {
+            servicePrice: true,
+          },
+        },
+        dailyPass: {
+          include: {
+            servicePrice: true,
+          },
+        },
       },
     });
     return NextResponse.json(customers, { status: 200 });

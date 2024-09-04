@@ -27,11 +27,11 @@ export function DataTableViewOptions<TData>({
           className="ml-auto hidden h-8 lg:flex border border-gray-100 rounded-lg shadow-lg hover:hadow-2xl transition-shadow duration-300 p-4"
         >
           <FaSlidersH className="mr-2 h-4 w-4" />
-          View
+          Vista
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Select columns</DropdownMenuLabel>
+        <DropdownMenuLabel>Seccion a ver</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()

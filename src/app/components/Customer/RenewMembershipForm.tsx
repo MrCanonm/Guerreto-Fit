@@ -2,14 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
-import { Customer, CustomerType, ServicePrice } from "./customerInterfaces";
-import Dropdown from "../Common/Dropdown";
+import { Customer, CustomerType, Membership } from "./customerInterfaces";
 import CustomButton from "../Common/CustomButton";
 import { useCustomerService } from "@/services/customer";
 
 interface RenewMembershipForm {
   customer: Customer;
-  onSubmit: SubmitHandler<Customer>;
+  onSubmit: SubmitHandler<Customer & Membership>;
 }
 
 const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
@@ -23,7 +22,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
     control,
     setValue,
     formState: { errors },
-  } = useForm<Customer & ServicePrice>({
+  } = useForm<Customer & Membership>({
     defaultValues: {
       ...customer,
       monthsToPay: 1, // Valor inicial para meses a pagar

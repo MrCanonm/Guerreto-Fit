@@ -75,6 +75,7 @@ const DailyPassCustomerPage: React.FC = () => {
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
     {
+      accessorKey: "Monto",
       header: "Monto",
       cell: ({ row }) => {
         const dailyPass = row.original.dailyPass;
@@ -85,6 +86,7 @@ const DailyPassCustomerPage: React.FC = () => {
     },
 
     {
+      accessorKey: "Fecha",
       header: "Fecha",
       cell: ({ row }) => {
         const dailyPass = row.original.dailyPass;

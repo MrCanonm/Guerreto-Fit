@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { MembershipStatus } from "@/app/components/Customer/customerInterfaces";
 
 const prisma = new PrismaClient();
 
@@ -9,18 +10,39 @@ interface Params {
   };
 }
 
+export async function GET(request: Request, { params }: Params) {
+  const { id } = params;
+  try {
+    const customer = await prisma.membership.findUnique({
+      where: { id: Number(id) },
+      include: { customer: true },
+    });
+    if (!customer) {
+      return NextResponse.json(
+        { error: "Membership not found" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json(customer, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Error fetching membership" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PATCH(request: Request, { params }: Params) {
   const { id } = params;
   console.log("PATCH request received");
 
   try {
     const body = await request.json();
-    const { status, endDate } = body.membership;
+    const { monthsToPay } = body;
 
-    // Verifica si el cliente existe
     const customer = await prisma.customer.findUnique({
       where: { id: Number(id) },
-      include: { membership: true }, // Incluye todas las membresías asociadas
+      include: { membership: true },
     });
 
     if (!customer) {
@@ -30,13 +52,26 @@ export async function PATCH(request: Request, { params }: Params) {
       );
     }
 
-    // Si el cliente tiene una membresía, actualiza su estado y fecha de vencimiento
     if (customer.membership?.id) {
+      const today = new Date();
+
+      // Verificamos si la membresía está vencida
+      const isMembershipExpired =
+        customer.membership.status === MembershipStatus.VENCIDA;
+
+      // Si la membresía está vencida, empezamos desde hoy; de lo contrario, desde la fecha de finalización anterior
+      const oldEndDate = isMembershipExpired
+        ? today
+        : new Date(customer.membership.endDate);
+      const endDate = new Date(oldEndDate);
+      const daysToAdd = monthsToPay * 30;
+      endDate.setDate(oldEndDate.getDate() + daysToAdd);
+
       const updatedMembership = await prisma.membership.update({
         where: { id: customer.membership.id },
         data: {
-          status: status === "cancelado" ? "activo" : status, // Actualiza solo si el estado es cancelado
-          endDate: new Date(endDate), // Actualiza la fecha de vencimiento
+          status: MembershipStatus.ACTIVO,
+          endDate: endDate,
         },
       });
 

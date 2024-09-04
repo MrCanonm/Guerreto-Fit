@@ -5,13 +5,13 @@ import "./globals.css";
 import { Toaster } from "sonner";
 
 const navItems: NavItem[] = [
-  { name: "Home", path: "/", icon: <FaHome /> },
+  { name: "Home", path: "/home", icon: <FaHome /> },
   {
-    name: "Clientes",
+    name: "Gestion de Pagos",
     path: "",
     icon: <FaBoxOpen />,
     children: [
-      { name: "Todos Los Clientes", path: "/customer", icon: <FaBoxOpen /> },
+      { name: "Todos Los Pagos", path: "/customer", icon: <FaBoxOpen /> },
       { name: "Membresia", path: "/membresia", icon: <FaTags /> },
       { name: "Pago Diario", path: "/dailypass", icon: <FaTags /> },
     ],

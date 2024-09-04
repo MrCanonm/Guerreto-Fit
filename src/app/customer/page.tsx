@@ -19,6 +19,7 @@ import { FaEllipsisH } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Modal from "../components/Common/Modal";
 import CreateCustomerForm from "../components/Customer/CreateCustomerForm";
+import { formatter } from "../components/utils/fomartValue";
 
 const CustomerPage: React.FC = () => {
   const {
@@ -87,6 +88,7 @@ const CustomerPage: React.FC = () => {
     { accessorKey: "sureName", header: "Apellido" },
 
     {
+      accessorKey: "Fecha",
       header: "Fecha",
       cell: ({ row }) => {
         const customerType = row.original.customerType;
@@ -107,7 +109,29 @@ const CustomerPage: React.FC = () => {
       },
     },
 
-    { accessorKey: "customerType", header: "Membresia" },
+    {
+      accessorKey: "Monto",
+      header: "Monto",
+      cell: ({ row }) => {
+        const customerType = row.original.customerType;
+
+        if (customerType === CustomerType.MEMBRESIA) {
+          const membership = row.original.membership;
+          return membership
+            ? formatter.format(membership.servicePrice.monto)
+            : "N/A";
+        } else if (customerType === CustomerType.PASE_DIARIO) {
+          const dailyPass = row.original.dailyPass;
+          return dailyPass
+            ? formatter.format(dailyPass.servicePrice.monto)
+            : "N/A";
+        } else {
+          return "N/A";
+        }
+      },
+    },
+
+    { accessorKey: "customerType", header: "Tipo de Pago" },
     {
       id: "actions",
       header: "Acciones",

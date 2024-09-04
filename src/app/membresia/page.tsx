@@ -2,7 +2,10 @@
 
 import { useCustomerService } from "@/services/customer";
 import { useEffect, useState } from "react";
-import { Customer } from "../components/Customer/customerInterfaces";
+import {
+  Customer,
+  Membership,
+} from "../components/Customer/customerInterfaces";
 import { useNotification } from "../components/Common/Notification";
 import { SubmitHandler } from "react-hook-form";
 import { DataTable } from "@/app/components/Common/dataTable/DataTable";
@@ -18,19 +21,27 @@ import { Button } from "@/components/ui/button";
 import Modal from "../components/Common/Modal";
 import { formatter } from "../components/utils/fomartValue";
 import RenewMembershipForm from "../components/Customer/RenewMembershipForm";
+import CustomButton from "../components/Common/CustomButton";
+import SearchBar from "../components/Common/SearchBar";
 
 const MembershipCustomerPage: React.FC = () => {
   const {
     data: customers,
     getAllMemberships,
-    updateCustomer,
     canceledMembership,
-    renewMembership,
+    updateMembership,
   } = useCustomerService();
 
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [renewModalIsOpen, setRenewModalIsOpen] = useState(false);
+  const [confirmCancelModalIsOpen, setConfirmCancelModalIsOpen] =
+    useState(false);
   const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
+  const [customerToCancel, setCustomerToCancel] = useState<Customer | null>(
+    null
+  );
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
 
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
 
@@ -38,61 +49,88 @@ const MembershipCustomerPage: React.FC = () => {
     getAllMemberships();
   }, []);
 
+  useEffect(() => {
+    if (customers) {
+      setFilteredCustomers(customers);
+    } else {
+      setFilteredCustomers([]);
+    }
+  }, [customers]);
+
+  useEffect(() => {
+    if (searchQuery && customers) {
+      const filtered = customers.filter((customer) => {
+        const dni = customer.membership?.dni.toLowerCase() || "";
+        const name = customer.name.toLowerCase();
+        const sureName = customer.sureName.toLowerCase();
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        return (
+          dni.includes(lowerCaseQuery) ||
+          name.includes(lowerCaseQuery) ||
+          sureName.includes(lowerCaseQuery) ||
+          (name + " " + sureName).includes(lowerCaseQuery)
+        );
+      });
+      setFilteredCustomers(filtered);
+    } else {
+      setFilteredCustomers(customers || []);
+    }
+  }, [searchQuery, customers]);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
   const handleModalClose = () => {
     setEditModalIsOpen(false);
     setRenewModalIsOpen(false);
+    setConfirmCancelModalIsOpen(false);
     setCurrentCustomer(null);
   };
 
-  const onSubmit: SubmitHandler<Customer> = async (formData) => {
+  const onSubmit: SubmitHandler<Membership> = async (formData) => {
     try {
       showLoading("Procesando", { id: "loading" });
 
-      if (editModalIsOpen && currentCustomer) {
-        await updateCustomer(currentCustomer.id, formData);
-        showSuccess("Éxito!", {
-          description: `Se ha actualizado el cliente ${formData.name}`,
-        });
-        setEditModalIsOpen(false);
-      }
-
       if (renewModalIsOpen && currentCustomer) {
-        await renewMembership(currentCustomer.id);
+        await updateMembership(currentCustomer.id, formData);
         showSuccess("Éxito!", {
-          description: `La membresía del cliente ${formData.name} ha sido renovada.`,
+          description: `La membresía del cliente ha sido renovada.`,
         });
         setRenewModalIsOpen(false);
       }
 
-      await getAllMemberships(); // Re-cargar clientes después de la actualización
+      await getAllMemberships();
       dismiss("loading");
     } catch (error) {
       console.error("Failed to submit form:", error);
 
       showError("Operación fallida!", {
-        description: `Error al tratar de procesar el cliente ${formData.name}, intentalo más tarde`,
+        description: `Error al tratar de procesar el cliente, intentalo más tarde`,
       });
 
       dismiss("loading");
     }
   };
 
-  const handleEditCustomer = (customer: Customer) => {
-    setCurrentCustomer(customer);
-    setEditModalIsOpen(true);
+  const showCancelConfirmation = (customer: Customer) => {
+    setCustomerToCancel(customer);
+    setConfirmCancelModalIsOpen(true);
   };
 
-  const handleCancelMembership = async (customerId: number) => {
+  const handleConfirmCancelMembership = async () => {
+    if (!customerToCancel) return;
+
     try {
       showLoading("Cancelando", { id: "loading" });
 
-      await canceledMembership(customerId);
+      await canceledMembership(customerToCancel.id);
 
       showSuccess("Éxito!", {
         description: `La membresía del cliente ha sido cancelada.`,
       });
 
-      await getAllMemberships(); // Re-cargar los clientes después de la cancelación
+      await getAllMemberships();
       dismiss("loading");
     } catch (error) {
       console.error("Error al cancelar la membresía:", error);
@@ -102,18 +140,30 @@ const MembershipCustomerPage: React.FC = () => {
       });
 
       dismiss("loading");
+    } finally {
+      setConfirmCancelModalIsOpen(false);
+      setCustomerToCancel(null);
     }
   };
 
   const handleRenewMembership = (customer: Customer) => {
     setCurrentCustomer(customer);
-    setRenewModalIsOpen(true); // Abre el modal para renovar membresía
+    setRenewModalIsOpen(true);
   };
 
   const columns: ColumnDef<Customer>[] = [
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
     {
+      accessorKey: "Cedula",
+      header: "Cedula",
+      cell: ({ row }) => {
+        const membership = row.original.membership;
+        return membership ? membership.dni : "N/A";
+      },
+    },
+    {
+      accessorKey: "Correo",
       header: "Correo",
       cell: ({ row }) => {
         const membership = row.original.membership;
@@ -121,13 +171,15 @@ const MembershipCustomerPage: React.FC = () => {
       },
     },
     {
-      header: "Cell/Tel",
+      accessorKey: "Telefono",
+      header: "Telefono",
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership ? membership.phone : "N/A";
       },
     },
     {
+      accessorKey: "Monto",
       header: "Monto",
       cell: ({ row }) => {
         const membership = row.original.membership;
@@ -137,24 +189,35 @@ const MembershipCustomerPage: React.FC = () => {
       },
     },
     {
+      accessorKey: "Fecha de Inicio",
       header: "Fecha de Inicio",
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership
-          ? new Date(membership.startDate).toLocaleString()
+          ? new Date(membership.startDate).toLocaleString("en-US", {
+              month: "numeric",
+              day: "numeric",
+              year: "numeric",
+            })
           : "N/A";
       },
     },
     {
+      accessorKey: "Fecha de Vencimiento",
       header: "Fecha de Vencimiento",
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership
-          ? new Date(membership.endDate).toLocaleString()
+          ? new Date(membership.endDate).toLocaleString("en-US", {
+              month: "numeric",
+              day: "numeric",
+              year: "numeric",
+            })
           : "N/A";
       },
     },
     {
+      accessorKey: "Estado",
       header: "Estado",
       cell: ({ row }) => {
         const membership = row.original.membership;
@@ -173,9 +236,7 @@ const MembershipCustomerPage: React.FC = () => {
             </Button>
           </DropdownTrigger>
           <DropdownContainer>
-            <DropdownItem
-              onClick={() => handleCancelMembership(row.original.id)}
-            >
+            <DropdownItem onClick={() => showCancelConfirmation(row.original)}>
               Cancelar Membresía
             </DropdownItem>
             <DropdownItem onClick={() => handleRenewMembership(row.original)}>
@@ -189,9 +250,20 @@ const MembershipCustomerPage: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">Clientes con Membresía</h1>
+      <div className="w-full flex justify-between items-center p-4">
+        <h1 className="text-2xl font-bold text-gray-700">Membresia</h1>
+      </div>
 
-      <DataTable columns={columns} data={customers || []} />
+      <hr className="my-4" />
+
+      <SearchBar
+        placeholder="Buscar clientes por cédula o nombre..."
+        variant="rounded"
+        color="blue"
+        onSearch={handleSearch}
+        value={searchQuery}
+      />
+      <DataTable columns={columns} data={filteredCustomers} />
 
       <Modal isOpen={editModalIsOpen} onClose={handleModalClose}>
         {currentCustomer && (
@@ -203,6 +275,24 @@ const MembershipCustomerPage: React.FC = () => {
         {currentCustomer && (
           <RenewMembershipForm customer={currentCustomer} onSubmit={onSubmit} />
         )}
+      </Modal>
+
+      <Modal isOpen={confirmCancelModalIsOpen} onClose={handleModalClose}>
+        <div>
+          <p>¿Estas seguro de cancelar la membresía de este cliente?</p>
+          <div className="flex justify-end space-x-4 mt-4">
+            <CustomButton onClick={handleModalClose} variant="primary">
+              No
+            </CustomButton>
+            <CustomButton
+              onClick={handleConfirmCancelMembership}
+              variant="secondary"
+              color="red"
+            >
+              Sí, cancelar
+            </CustomButton>
+          </div>
+        </div>
       </Modal>
     </div>
   );

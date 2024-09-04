@@ -1,5 +1,5 @@
 // src/app/components/Common/Notification.tsx
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 interface NotificationOptions {
   description?: string;
@@ -29,9 +29,16 @@ export const useNotification = () => {
     toast.loading(message, options);
   };
 
-  const dismiss = (id:string) => {
+  const dismiss = (id: string) => {
     toast.dismiss(id);
   };
 
-  return { showSuccess, showError, showWarning, showInfo, showLoading, dismiss };
+  return {
+    showSuccess,
+    showError,
+    showWarning,
+    showInfo,
+    showLoading,
+    dismiss,
+  };
 };
