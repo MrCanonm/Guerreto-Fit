@@ -119,7 +119,7 @@ const DailyPassCustomerPage: React.FC = () => {
     <div>
       <div className="w-full flex justify-between items-center p-4">
         <h1 className="text-2xl font-bold text-gray-700">
-          Clientes con Membresía
+          Clientes de Pago Diario
         </h1>
       </div>
 

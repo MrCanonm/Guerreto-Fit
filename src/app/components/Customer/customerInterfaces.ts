@@ -16,6 +16,7 @@ export type Customer = {
   customerType: CustomerType;
   membership?: Membership;
   dailyPass?: DailyPass;
+  monthsToPay?: number;
 };
 
 export type Membership = {

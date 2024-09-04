@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
 import { Customer, CustomerType, ServicePrice } from "./customerInterfaces";
 import Dropdown from "../Common/Dropdown";
 import CustomButton from "../Common/CustomButton";
@@ -15,14 +15,47 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     handleSubmit,
     reset,
     control,
+    setValue,
     formState: { errors },
-  } = useForm<Customer & ServicePrice>({});
+  } = useForm<Customer & ServicePrice>({
+    defaultValues: {
+      monthsToPay: 1,
+      membership: {
+        servicePrice: { monto: 1000 },
+      },
+    },
+  });
 
   const { getServicePrice } = useCustomerService();
 
   const [selectedCustomerType, setSelectedCustomerType] =
     useState<CustomerType | null>(null);
   const [dailyPassPrice, setDailyPassPrice] = useState<number | null>(null);
+
+  const monthsToPay = useWatch({ control, name: "monthsToPay" });
+  const membershipPrice = useWatch({
+    control,
+    name: "membership.servicePrice.monto",
+  });
+
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+
+  useEffect(() => {
+    if (
+      selectedCustomerType === CustomerType.MEMBRESIA &&
+      monthsToPay &&
+      membershipPrice
+    ) {
+      setTotalAmount(Number(monthsToPay) * Number(membershipPrice));
+    } else if (
+      selectedCustomerType === CustomerType.PASE_DIARIO &&
+      dailyPassPrice
+    ) {
+      setTotalAmount(dailyPassPrice);
+    } else {
+      setTotalAmount(0);
+    }
+  }, [selectedCustomerType, monthsToPay, membershipPrice, dailyPassPrice]);
 
   const handleCancel = () => {
     reset();
@@ -42,8 +75,10 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     } else if (type === CustomerType.MEMBRESIA) {
       const priceData = await getServicePrice("MEMBRESIA");
       setDailyPassPrice(priceData.monto);
+      setValue("membership.servicePrice.monto", priceData.monto);
     } else {
       setDailyPassPrice(null);
+      setValue("membership.servicePrice.monto", 0);
     }
   };
 
@@ -162,17 +197,20 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
             </div>
 
             <div>
-              <label className="block">Fecha de Fin</label>
-              <input
-                type="datetime-local"
+              <label className="block">Meses a Pagar</label>
+              <select
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.endDate", {
-                  required: "Este campo es requerido",
-                })}
-              />
-              {errors.membership?.endDate && (
+                {...register("monthsToPay", { required: true })}
+              >
+                {Array.from({ length: 12 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+              {errors.monthsToPay && (
                 <span className="text-red-600">
-                  {errors.membership.endDate.message}
+                  {errors.monthsToPay.message}
                 </span>
               )}
             </div>
@@ -183,6 +221,19 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
                 type="number"
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
                 value={dailyPassPrice ?? ""}
+                readOnly
+              />
+              {errors.monto && (
+                <span className="text-red-600">{errors.monto.message}</span>
+              )}
+            </div>
+
+            <div>
+              <label className="block">Monto Total</label>
+              <input
+                type="number"
+                className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
+                value={totalAmount}
                 readOnly
               />
               {errors.monto && (

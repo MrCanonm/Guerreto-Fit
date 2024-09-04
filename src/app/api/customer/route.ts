@@ -4,7 +4,6 @@ import {
   CustomerType,
   MembershipStatus,
 } from "@/app/components/Customer/customerInterfaces";
-
 const prisma = new PrismaClient();
 
 export async function GET() {
@@ -27,7 +26,8 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, sureName, customerType, dailyPass, membership } = body;
+    const { name, sureName, customerType, dailyPass, membership, monthsToPay } =
+      body;
 
     console.log("Received payload:", body);
 
@@ -89,14 +89,19 @@ export async function POST(request: Request) {
           );
         }
 
+        const startDate = new Date(membership.startDate);
+        const endDate = new Date(startDate);
+        const daysToAdd = monthsToPay * 30;
+        endDate.setDate(startDate.getDate() + daysToAdd);
+
         const createdMembership = await prisma.membership.create({
           data: {
             email: membership.email,
             phone: membership.phone,
             dni: membership.dni,
             servicePriceId: servicePrice.id,
-            startDate: new Date(membership.startDate),
-            endDate: new Date(membership.endDate),
+            startDate: startDate,
+            endDate: endDate,
             customerId: newCustomer.id,
           },
         });
