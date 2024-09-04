@@ -1,4 +1,7 @@
-import { Customer } from "@/app/components/Customer/customerInterfaces";
+import {
+  Customer,
+  Membership,
+} from "@/app/components/Customer/customerInterfaces";
 import { useFetch } from "../hooks/useFetch";
 
 export const useCustomerService = () => {
@@ -98,6 +101,23 @@ export const useCustomerService = () => {
     );
   };
 
+  const updateMembership = async (
+    membershipId: number,
+    updatedCustomerData: Membership
+  ) => {
+    const dataToSend = {
+      ...updatedCustomerData,
+    };
+
+    await executeFetch(
+      `${membershipResource}/${membershipId}`,
+      "PATCH",
+      dataToSend,
+      "Error updating customer",
+      "Customer updated successfully"
+    );
+  };
+
   const pendingMembership = async (customerId: number) => {
     await executeFetch(
       `${membershipResource}/${customerId}/peding`,
@@ -146,5 +166,6 @@ export const useCustomerService = () => {
     renewMembership,
     pendingMembership,
     getServicePrice,
+    updateMembership,
   };
 };

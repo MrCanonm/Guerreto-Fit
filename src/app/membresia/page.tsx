@@ -17,6 +17,7 @@ import { FaEllipsisH } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import Modal from "../components/Common/Modal";
 import { formatter } from "../components/utils/fomartValue";
+import RenewMembershipForm from "../components/Customer/RenewMembershipForm";
 
 const MembershipCustomerPage: React.FC = () => {
   const {
@@ -28,6 +29,7 @@ const MembershipCustomerPage: React.FC = () => {
   } = useCustomerService();
 
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [renewModalIsOpen, setRenewModalIsOpen] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
 
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
@@ -38,6 +40,7 @@ const MembershipCustomerPage: React.FC = () => {
 
   const handleModalClose = () => {
     setEditModalIsOpen(false);
+    setRenewModalIsOpen(false);
     setCurrentCustomer(null);
   };
 
@@ -51,6 +54,14 @@ const MembershipCustomerPage: React.FC = () => {
           description: `Se ha actualizado el cliente ${formData.name}`,
         });
         setEditModalIsOpen(false);
+      }
+
+      if (renewModalIsOpen && currentCustomer) {
+        await renewMembership(currentCustomer.id);
+        showSuccess("Éxito!", {
+          description: `La membresía del cliente ${formData.name} ha sido renovada.`,
+        });
+        setRenewModalIsOpen(false);
       }
 
       await getAllMemberships(); // Re-cargar clientes después de la actualización
@@ -94,28 +105,11 @@ const MembershipCustomerPage: React.FC = () => {
     }
   };
 
-  const handleRenewMembership = async (customerId: number) => {
-    try {
-      showLoading("Renovando", { id: "loading" });
-
-      await renewMembership(customerId);
-
-      showSuccess("Éxito!", {
-        description: `La membresía del cliente ha sido renovada.`,
-      });
-
-      await getAllMemberships(); // Re-cargar los clientes después de la renovación
-      dismiss("loading");
-    } catch (error) {
-      console.error("Error al renovar la membresía:", error);
-
-      showError("Operación fallida!", {
-        description: `Error al intentar renovar la membresía, intente de nuevo más tarde.`,
-      });
-
-      dismiss("loading");
-    }
+  const handleRenewMembership = (customer: Customer) => {
+    setCurrentCustomer(customer);
+    setRenewModalIsOpen(true); // Abre el modal para renovar membresía
   };
+
   const columns: ColumnDef<Customer>[] = [
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
@@ -133,7 +127,6 @@ const MembershipCustomerPage: React.FC = () => {
         return membership ? membership.phone : "N/A";
       },
     },
-
     {
       header: "Monto",
       cell: ({ row }) => {
@@ -183,12 +176,10 @@ const MembershipCustomerPage: React.FC = () => {
             <DropdownItem
               onClick={() => handleCancelMembership(row.original.id)}
             >
-              Cancelar
+              Cancelar Membresía
             </DropdownItem>
-            <DropdownItem
-              onClick={() => handleRenewMembership(row.original.id)}
-            >
-              Renovar
+            <DropdownItem onClick={() => handleRenewMembership(row.original)}>
+              Renovar Membresía
             </DropdownItem>
           </DropdownContainer>
         </Dropdown>
@@ -198,15 +189,21 @@ const MembershipCustomerPage: React.FC = () => {
 
   return (
     <div>
-      <div className="w-full flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold text-gray-700">
-          Clientes con Membresía
-        </h1>
-      </div>
-
-      <hr className="my-4" />
+      <h1 className="text-2xl font-bold mb-6">Clientes con Membresía</h1>
 
       <DataTable columns={columns} data={customers || []} />
+
+      <Modal isOpen={editModalIsOpen} onClose={handleModalClose}>
+        {currentCustomer && (
+          <RenewMembershipForm customer={currentCustomer} onSubmit={onSubmit} />
+        )}
+      </Modal>
+
+      <Modal isOpen={renewModalIsOpen} onClose={handleModalClose}>
+        {currentCustomer && (
+          <RenewMembershipForm customer={currentCustomer} onSubmit={onSubmit} />
+        )}
+      </Modal>
     </div>
   );
 };
