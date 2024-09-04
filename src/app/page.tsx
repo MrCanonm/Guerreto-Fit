@@ -2,7 +2,7 @@
 
 import { useStadisctisService } from "@/services/stadistics";
 import { useEffect } from "react";
-import StatCard from "../components/Common/stadisticsCards/StatCard";
+import StatCard from "./components/Common/stadisticsCards/StatCard";
 
 const Home = () => {
   const { data, loading, error, getAllStadistics } = useStadisctisService();

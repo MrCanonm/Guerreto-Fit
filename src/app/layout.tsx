@@ -1,19 +1,29 @@
 import React from "react";
 import Sidebar, { NavItem } from "./components/Layout/Sidebar";
-import { FaBoxOpen, FaHome, FaTags, FaUser } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaCashRegister,
+  FaCreditCard,
+  FaHome,
+  FaLandmark,
+  FaMoneyBillAlt,
+  FaMoneyCheckAlt,
+  FaTags,
+  FaUser,
+} from "react-icons/fa";
 import "./globals.css";
 import { Toaster } from "sonner";
 
 const navItems: NavItem[] = [
-  { name: "Home", path: "/home", icon: <FaHome /> },
+  { name: "Home", path: "/", icon: <FaHome /> },
   {
     name: "Gestion de Pagos",
     path: "",
-    icon: <FaBoxOpen />,
+    icon: <FaCashRegister />,
     children: [
-      { name: "Todos Los Pagos", path: "/customer", icon: <FaBoxOpen /> },
-      { name: "Membresia", path: "/membresia", icon: <FaTags /> },
-      { name: "Pago Diario", path: "/dailypass", icon: <FaTags /> },
+      { name: "Todos Los Pagos", path: "/customer", icon: <FaLandmark /> },
+      { name: "Membresia", path: "/membresia", icon: <FaMoneyCheckAlt /> },
+      { name: "Pago Diario", path: "/dailypass", icon: <FaMoneyBillAlt /> },
     ],
   },
 ];
