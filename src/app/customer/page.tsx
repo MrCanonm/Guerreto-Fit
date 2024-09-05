@@ -127,20 +127,6 @@ const CustomerPage: React.FC = () => {
     },
 
     { accessorKey: "customerType", header: "Tipo de Pago" },
-    {
-      id: "actions",
-      header: "Acciones",
-      cell: ({ row }) => (
-        <Dropdown>
-          <DropdownTrigger asChild>
-            <Button className="flex w-8 h-8 p-0" variant="ghost">
-              <FaEllipsisH className="w-4 h-4" />
-              <span className="sr-only">Acciones</span>
-            </Button>
-          </DropdownTrigger>
-        </Dropdown>
-      ),
-    },
   ];
 
   return (
