@@ -9,7 +9,7 @@ const Home = () => {
 
   useEffect(() => {
     getAllStadistics();
-  }, [getAllStadistics]);
+  }, []);
 
   // Mientras carga
   if (loading) return <div>Loading...</div>;

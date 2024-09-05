@@ -37,7 +37,7 @@ const CustomerPage: React.FC = () => {
 
   useEffect(() => {
     getAllCustomers();
-  }, [getAllCustomers]);
+  }, []);
 
   const handleModalClose = () => {
     setCreateModalIsOpen(false);
@@ -76,11 +76,6 @@ const CustomerPage: React.FC = () => {
 
       dismiss("loading");
     }
-  };
-
-  const handleEditCustomer = (customer: Customer) => {
-    setCurrentCustomer(customer);
-    setEditModalIsOpen(true);
   };
 
   const columns: ColumnDef<Customer>[] = [
