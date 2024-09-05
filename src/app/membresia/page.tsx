@@ -47,7 +47,7 @@ const MembershipCustomerPage: React.FC = () => {
 
   useEffect(() => {
     getAllMemberships();
-  }, []);
+  }, [getAllMemberships]);
 
   useEffect(() => {
     if (customers) {

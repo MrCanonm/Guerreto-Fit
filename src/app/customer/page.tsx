@@ -37,7 +37,7 @@ const CustomerPage: React.FC = () => {
 
   useEffect(() => {
     getAllCustomers();
-  }, []);
+  }, [getAllCustomers]);
 
   const handleModalClose = () => {
     setCreateModalIsOpen(false);

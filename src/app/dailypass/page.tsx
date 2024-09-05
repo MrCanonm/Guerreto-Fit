@@ -15,14 +15,11 @@ import { FaEllipsisH } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { Customer } from "../components/Customer/customerInterfaces";
 import { useNotification } from "../components/Common/Notification";
-import Modal from "../components/Common/Modal";
 import { formatter } from "../components/utils/fomartValue";
 
 const DailyPassCustomerPage: React.FC = () => {
   const {
     data: customers,
-    loading,
-    error,
     getAllDailyPasses,
     updateCustomer,
   } = useCustomerService();
@@ -34,37 +31,7 @@ const DailyPassCustomerPage: React.FC = () => {
 
   useEffect(() => {
     getAllDailyPasses();
-  }, []);
-
-  const handleModalClose = () => {
-    setEditModalIsOpen(false);
-    setCurrentCustomer(null);
-  };
-
-  const onSubmit: SubmitHandler<Customer> = async (formData) => {
-    try {
-      showLoading("Procesando", { id: "loading" });
-
-      if (editModalIsOpen && currentCustomer) {
-        await updateCustomer(currentCustomer.id, formData);
-        showSuccess("Éxito!", {
-          description: `Se ha actualizado el cliente ${formData.name}`,
-        });
-        setEditModalIsOpen(false);
-      }
-
-      await getAllDailyPasses(); // Re-cargar clientes después de la actualización
-      dismiss("loading");
-    } catch (error) {
-      console.error("Failed to submit form:", error);
-
-      showError("Operación fallida!", {
-        description: `Error al tratar de procesar el cliente ${formData.name}, intentalo más tarde`,
-      });
-
-      dismiss("loading");
-    }
-  };
+  }, [getAllDailyPasses]);
 
   const handleEditCustomer = (customer: Customer) => {
     setCurrentCustomer(customer);

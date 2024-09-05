@@ -5,7 +5,6 @@ import {
   MembershipStatus,
 } from "@/app/components/Customer/customerInterfaces";
 const prisma = new PrismaClient();
-
 export async function GET() {
   try {
     const customers = await prisma.customer.findMany({
