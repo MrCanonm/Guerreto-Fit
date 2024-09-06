@@ -23,12 +23,15 @@ model Customer {
 model Membership {
   id             Int               @id @default(autoincrement())
   customerId     Int               @unique
-  servicePriceId Int               
+  servicePriceId Int    
   email          String?           
   phone          String?
   startDate      DateTime
   endDate        DateTime
-  dni            String            
+  dni            String   
+  monthsToPay    Int
+  totalAmout     Float
+
   status         MembershipStatus @default(ACTIVO)
 
   customer       Customer          @relation(fields: [customerId], references: [id])

@@ -33,8 +33,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, sureName, customerType, dailyPass, membership, monthsToPay } =
-      body;
+    const { name, sureName, customerType, dailyPass, membership } = body;
 
     console.log("Received payload:", body);
 
@@ -98,15 +97,19 @@ export async function POST(request: Request) {
 
         const startDate = new Date(membership.startDate);
         const endDate = new Date(startDate);
-        const daysToAdd = monthsToPay * 30;
+        const daysToAdd = membership.monthsToPay * 30;
         endDate.setDate(startDate.getDate() + daysToAdd);
 
+        const totalAmount =
+          Number(membership.monthsToPay) * Number(servicePrice.monto);
         const createdMembership = await prisma.membership.create({
           data: {
             email: membership.email,
             phone: membership.phone,
             dni: membership.dni,
             servicePriceId: servicePrice.id,
+            monthsToPay: membership.monthsToPay,
+            totalAmout: totalAmount,
             startDate: startDate,
             endDate: endDate,
             customerId: newCustomer.id,

@@ -6,6 +6,7 @@ import { Customer, CustomerType, ServicePrice } from "./customerInterfaces";
 import Dropdown from "../Common/Dropdown";
 import CustomButton from "../Common/CustomButton";
 import { useCustomerService } from "@/services/customer";
+import { generatePDF } from "../utils/generatePDF";
 
 const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
   onSubmit,
@@ -19,10 +20,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     formState: { errors },
   } = useForm<Customer & ServicePrice>({
     defaultValues: {
-      monthsToPay: 1,
-      membership: {
-        servicePrice: { monto: 1000 },
-      },
+      membership: { monthsToPay: 1 },
     },
   });
 
@@ -32,7 +30,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     useState<CustomerType | null>(null);
   const [dailyPassPrice, setDailyPassPrice] = useState<number | null>(null);
 
-  const monthsToPay = useWatch({ control, name: "monthsToPay" });
+  const monthsToPay = useWatch({ control, name: "membership.monthsToPay" });
   const membershipPrice = useWatch({
     control,
     name: "membership.servicePrice.monto",
@@ -47,6 +45,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
       membershipPrice
     ) {
       setTotalAmount(Number(monthsToPay) * Number(membershipPrice));
+      setValue("membership.totalAmout", membershipPrice);
     } else if (
       selectedCustomerType === CustomerType.PASE_DIARIO &&
       dailyPassPrice
@@ -82,12 +81,19 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     }
   };
 
+  const handleSubmitReceipt: SubmitHandler<Customer> = async (data) => {
+    await onSubmit(data);
+    if (data.customerType === CustomerType.MEMBRESIA) {
+      generatePDF(data);
+    }
+  };
+
   return (
     <div>
       <h1 className="text-xl font-bold mb-8 text-gray-600">Nuevo Pago</h1>
 
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(handleSubmitReceipt)}
         className="grid grid-cols-2 gap-4"
       >
         <div>
@@ -208,7 +214,10 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <label className="block">Meses a Pagar</label>
               <select
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("monthsToPay", { required: true })}
+                {...register("membership.monthsToPay", {
+                  required: true,
+                  setValueAs: (value) => parseInt(value, 10), // Convertir a número
+                })}
               >
                 {Array.from({ length: 12 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
@@ -216,9 +225,9 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
                   </option>
                 ))}
               </select>
-              {errors.monthsToPay && (
+              {errors.membership?.monthsToPay && (
                 <span className="text-red-600">
-                  {errors.monthsToPay.message}
+                  {errors.membership?.monthsToPay.message}
                 </span>
               )}
             </div>
@@ -272,7 +281,10 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
             Cancelar
           </CustomButton>
 
-          <CustomButton onClick={handleSubmit(onSubmit)} variant="primary">
+          <CustomButton
+            onClick={handleSubmit(handleSubmitReceipt)}
+            variant="primary"
+          >
             Enviar
           </CustomButton>
         </div>

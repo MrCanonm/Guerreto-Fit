@@ -16,7 +16,6 @@ export type Customer = {
   customerType: CustomerType;
   membership?: Membership;
   dailyPass?: DailyPass;
-  monthsToPay?: number;
 };
 
 export type Membership = {
@@ -27,6 +26,8 @@ export type Membership = {
   phone?: string;
   startDate: Date;
   endDate: Date;
+  monthsToPay?: number;
+  totalAmout: number;
   status: MembershipStatus;
   servicePriceId: number;
   servicePrice: ServicePrice;

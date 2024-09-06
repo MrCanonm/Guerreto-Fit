@@ -28,6 +28,8 @@ export async function GET() {
           startDate: membership.startDate,
           endDate: membership.endDate,
           status: membership.status,
+          totalAmout: membership.totalAmout,
+          monthsToPay: membership.monthsToPay,
         },
       })),
       { status: 200 }

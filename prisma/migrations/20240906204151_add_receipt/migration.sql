@@ -24,6 +24,8 @@ CREATE TABLE "membership" (
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
     "dni" TEXT NOT NULL,
+    "monthsToPay" INTEGER NOT NULL,
+    "totalAmout" DOUBLE PRECISION NOT NULL,
     "status" "MembershipStatus" NOT NULL DEFAULT 'ACTIVO',
 
     CONSTRAINT "membership_pkey" PRIMARY KEY ("id")

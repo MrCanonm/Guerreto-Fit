@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   Customer,
   Membership,
+  ServicePrice,
 } from "../components/Customer/customerInterfaces";
 import { useNotification } from "../components/Common/Notification";
 import { SubmitHandler } from "react-hook-form";
@@ -26,6 +27,9 @@ import SearchBar from "../components/Common/SearchBar";
 import { formatPhoneNumber } from "../components/utils/formatCellNumber";
 import { formatDNI } from "../components/utils/formatDNI ";
 import StatusBadge from "../components/Common/dataTable/StatusBadge";
+import { MembershipReceiptPDF } from "../components/Customer/GenerateReceiptPDF";
+import { pdf } from "@react-pdf/renderer";
+import { generatePDF } from "../components/utils/generatePDF";
 
 const MembershipCustomerPage: React.FC = () => {
   const {
@@ -153,6 +157,10 @@ const MembershipCustomerPage: React.FC = () => {
     setCurrentCustomer(customer);
     setRenewModalIsOpen(true);
   };
+  const handleSubmitReceipt: SubmitHandler<Customer> = async (data) => {
+    console.log(data.membership?.servicePrice.monto);
+    generatePDF(data);
+  };
 
   const columns: ColumnDef<Customer>[] = [
     {
@@ -198,9 +206,7 @@ const MembershipCustomerPage: React.FC = () => {
       header: "Monto",
       cell: ({ row }) => {
         const membership = row.original.membership;
-        return membership
-          ? formatter.format(membership.servicePrice.monto)
-          : "N/A";
+        return membership ? formatter.format(membership.totalAmout) : "N/A";
       },
     },
     {
@@ -258,6 +264,9 @@ const MembershipCustomerPage: React.FC = () => {
             </DropdownItem>
             <DropdownItem onClick={() => handleRenewMembership(row.original)}>
               Renovar Membresía
+            </DropdownItem>
+            <DropdownItem onClick={() => handleSubmitReceipt(row.original)}>
+              Genera Recibo
             </DropdownItem>
           </DropdownContainer>
         </Dropdown>
