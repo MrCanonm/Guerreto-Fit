@@ -21,7 +21,7 @@ const CustomButton: React.FC<ButtonProps> = ({
     "px-4 py-2 mb-2 rounded-md font-semibold transition-transform duration-300 transform shadow-custom hover:shadow-2xl hover:translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500";
 
   // Definir las clases para cada tipo de botón en constantes
-  const primaryClasses = "bg-blue-900 text-white hover:bg-blue-700";
+  const primaryClasses = "bg-orange-900 text-white hover:bg-orange-600";
   const secondaryRedClasses =
     "bg-white border border-red-600 text-red-600 hover:bg-red-600 hover:text-white";
   const secondaryGrayClasses =

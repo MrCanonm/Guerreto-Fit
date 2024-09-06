@@ -1,3 +1,4 @@
+import React from "react";
 import {
   getCoreRowModel,
   getPaginationRowModel,
@@ -25,17 +26,19 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
   });
 
   return (
-    <div className="container mx-auto">
-      <DataTableViewOptions table={table} />
-      <div className="custom-scrollbar overflow-x-auto my-4 border border-gray-100 rounded-lg shadow-custom hover:hadow-2xl transition-shadow duration-300 p-0 pb-4">
-        <table className="min-w-full divide-y divide-gray-200 mb-8">
-          <thead className="bg-gray-50">
+    <div className="container mx-auto p-6 bg-gray-50 rounded-xl shadow-lg">
+      <div className="mb-4">
+        <DataTableViewOptions table={table} />
+      </div>
+      <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-blue-900">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-100 uppercase tracking-wider"
                   >
                     <DataTableColumnHeader
                       column={header.column}
@@ -47,12 +50,17 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
             ))}
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-100">
+            {table.getRowModel().rows.map((row, index) => (
+              <tr
+                key={row.id}
+                className={`${
+                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                } hover:bg-blue-50 transition-colors duration-200 ease-in-out`}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-700"
                   >
                     {typeof cell.column.columnDef.cell === "function"
                       ? (
@@ -67,6 +75,8 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="mt-4">
         <DataTablePagination table={table} />
       </div>
     </div>

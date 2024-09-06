@@ -32,9 +32,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   // Clases personalizadas para el color
   const blueClasses =
-    "border border-blue-500 text-blue-900 focus:ring-blue-500";
+    "border border-orange-900 text-gray-900 focus:ring-orange-500";
   const grayClasses =
-    "border border-gray-400 text-gray-700 focus:ring-gray-500";
+    "border border-orange-400 text-gray-700 focus:ring-gray-500";
 
   // Clases personalizadas para la variante
   const defaultClasses = "rounded-md";

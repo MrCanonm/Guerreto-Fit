@@ -1,4 +1,4 @@
-interface StatisticsData {
+export interface StatisticsData {
   totalActiveMemberships: number;
   todayDailyPassCount: number;
   totalDailyPassCount: number;
@@ -6,4 +6,9 @@ interface StatisticsData {
   totalDailyPassAmountToday: number;
   totalDailyPassAmount: number;
   totalAmmout: number;
+}
+
+export interface ServicePriceData {
+  membershipPrice: { monto: number };
+  dailypassPrice: { monto: number };
 }

@@ -107,9 +107,9 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
         <div>
           <label className="block">Apellido</label>
           <input
-            className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-            {...register("sureName")}
             type="text"
+            className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
+            {...register("sureName", { required: "Este campo es requerido" })}
           />
         </div>
 
@@ -142,7 +142,11 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <label className="block">Cedula</label>
               <input
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.dni", {})}
+                {...register("membership.dni", {
+                  minLength: 11,
+                  maxLength: 11,
+                  required: "Este campo es requerido",
+                })}
                 type="text"
               />
               {errors.membership?.dni && (
@@ -156,7 +160,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <label className="block">Correo</label>
               <input
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.email", {})}
+                {...register("membership.email")}
                 type="text"
               />
               {errors.membership?.email && (
@@ -170,7 +174,11 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <label className="block">Telefono</label>
               <input
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.phone", {})}
+                {...register("membership.phone", {
+                  minLength: 10,
+                  maxLength: 10,
+                  required: "Este campo es requerido",
+                })}
                 type="text"
               />
               {errors.membership?.phone && (

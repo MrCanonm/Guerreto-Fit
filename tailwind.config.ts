@@ -11,21 +11,21 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        roboto: ['Roboto', 'sans-serif'],
-        open: ['Open Sans', 'sans-serif'],
-        lato: ['Lato', 'sans-serif'],
-        montserrat: ['Montserrat', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
-        nunito: ['Nunito', 'sans-serif'],
-        source: ['Source Sans Pro', 'sans-serif'],
-        raleway: ['Raleway', 'sans-serif'],
-        inter: ['Inter', 'sans-serif'],
-        ubuntu: ['Ubuntu', 'sans-serif'],
-        playfair: ['Playfair Display', 'serif'],
-        bebas: ['Bebas Neue', 'sans-serif'],
-        quicksand: ['Quicksand', 'sans-serif'],
-        libre: ['Libre Baskerville', 'serif'],
-        fira: ['Fira Sans', 'sans-serif'],
+        roboto: ["Roboto", "sans-serif"],
+        open: ["Open Sans", "sans-serif"],
+        lato: ["Lato", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"],
+        nunito: ["Nunito", "sans-serif"],
+        source: ["Source Sans Pro", "sans-serif"],
+        raleway: ["Raleway", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+        ubuntu: ["Ubuntu", "sans-serif"],
+        playfair: ["Playfair Display", "serif"],
+        bebas: ["Bebas Neue", "sans-serif"],
+        quicksand: ["Quicksand", "sans-serif"],
+        libre: ["Libre Baskerville", "serif"],
+        fira: ["Fira Sans", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -35,6 +35,10 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        guerreroblue: {
+          DEFAULT: "hsl(var(--guerreroblue))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -70,7 +74,6 @@ const config: Config = {
       boxShadow: {
         custom: "0px 2px 15px rgba(0, 0, 0, 0.2)",
       },
-      
     },
   },
   plugins: [require("tailwindcss-animate")],

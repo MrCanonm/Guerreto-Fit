@@ -23,6 +23,9 @@ import { formatter } from "../components/utils/fomartValue";
 import RenewMembershipForm from "../components/Customer/RenewMembershipForm";
 import CustomButton from "../components/Common/CustomButton";
 import SearchBar from "../components/Common/SearchBar";
+import { formatPhoneNumber } from "../components/utils/formatCellNumber";
+import { formatDNI } from "../components/utils/formatDNI ";
+import StatusBadge from "../components/Common/dataTable/StatusBadge";
 
 const MembershipCustomerPage: React.FC = () => {
   const {
@@ -152,30 +155,42 @@ const MembershipCustomerPage: React.FC = () => {
   };
 
   const columns: ColumnDef<Customer>[] = [
-    { accessorKey: "name", header: "Nombre" },
-    { accessorKey: "sureName", header: "Apellido" },
+    {
+      accessorKey: "customer",
+      header: "Cliente",
+      cell: ({ row }) => {
+        const membership = row.original.membership;
+        const name = row.original.name || "N/A";
+        const sureName = row.original.sureName || "N/A";
+        const email = membership?.email || "N/A";
+
+        return (
+          <div>
+            <span className="block font-bold text-gray-500">
+              {" "}
+              {name + " " + sureName}
+            </span>
+            <span className="block text-sm text-gray-500">{email}</span>
+          </div>
+        );
+      },
+    },
+
     {
       accessorKey: "Cedula",
       header: "Cedula",
       cell: ({ row }) => {
         const membership = row.original.membership;
-        return membership ? membership.dni : "N/A";
+        return membership ? formatDNI(membership.dni) : "N/A";
       },
     },
-    {
-      accessorKey: "Correo",
-      header: "Correo",
-      cell: ({ row }) => {
-        const membership = row.original.membership;
-        return membership ? membership.email : "N/A";
-      },
-    },
+
     {
       accessorKey: "Telefono",
       header: "Telefono",
       cell: ({ row }) => {
         const membership = row.original.membership;
-        return membership ? membership.phone : "N/A";
+        return membership ? formatPhoneNumber(membership?.phone) : "N/A";
       },
     },
     {
@@ -189,31 +204,32 @@ const MembershipCustomerPage: React.FC = () => {
       },
     },
     {
-      accessorKey: "Fecha de Inicio",
-      header: "Fecha de Inicio",
+      accessorKey: "fechas",
+      header: "Periodo de Membresía",
       cell: ({ row }) => {
         const membership = row.original.membership;
-        return membership
-          ? new Date(membership.startDate).toLocaleString("en-US", {
-              month: "numeric",
-              day: "numeric",
-              year: "numeric",
-            })
-          : "N/A";
-      },
-    },
-    {
-      accessorKey: "Fecha de Vencimiento",
-      header: "Fecha de Vencimiento",
-      cell: ({ row }) => {
-        const membership = row.original.membership;
-        return membership
-          ? new Date(membership.endDate).toLocaleString("en-US", {
-              month: "numeric",
-              day: "numeric",
-              year: "numeric",
-            })
-          : "N/A";
+        return membership ? (
+          <div className="flex flex-col">
+            <span>
+              <strong>Inicio:</strong>{" "}
+              {new Date(membership.startDate).toLocaleString("en-US", {
+                month: "numeric",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+            <span>
+              <strong>Vencimiento:</strong>{" "}
+              {new Date(membership.endDate).toLocaleString("en-US", {
+                month: "numeric",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+        ) : (
+          "N/A"
+        );
       },
     },
     {
@@ -221,11 +237,12 @@ const MembershipCustomerPage: React.FC = () => {
       header: "Estado",
       cell: ({ row }) => {
         const membership = row.original.membership;
-        return membership ? membership.status : "N/A";
+        const status = membership ? membership.status : null;
+        return <StatusBadge status={status} />;
       },
     },
     {
-      id: "actions",
+      accessorKey: "actions",
       header: "Acciones",
       cell: ({ row }) => (
         <Dropdown>
@@ -251,7 +268,7 @@ const MembershipCustomerPage: React.FC = () => {
   return (
     <div>
       <div className="w-full flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold text-gray-700">Membresia</h1>
+        <h1 className="text-2xl font-bold text-blue-900">Membresias</h1>
       </div>
 
       <hr className="my-4" />

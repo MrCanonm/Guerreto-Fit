@@ -1,45 +1,48 @@
-"use client";
-
 import React from "react";
 
 interface StatCardProps {
   title: string;
   value: number | string;
-  color?: "blue" | "green" | "red" | "gray";
+  change?: number;
+  lastWeek?: number | string;
+  color?: "gray" | "orange" | "red" | "blue";
   className?: string;
 }
 
 const StatCard: React.FC<StatCardProps> = ({
   title,
   value,
-  color = "blue",
+  change,
+  lastWeek,
+  color = "gray",
   className,
 }) => {
-  const baseClasses =
-    "p-4 rounded-lg shadow-md text-center font-semibold transition-transform duration-300 transform hover:shadow-lg hover:translate-y-1";
+  const baseClasses = "p-6 rounded-lg shadow-md font-semibold bg-white";
 
-  // Definir las clases para cada color de la carta
-  const blueClasses = "bg-blue-100 text-blue-900 border border-blue-400";
-  const greenClasses = "bg-green-100 text-green-900 border border-green-400";
-  const redClasses = "bg-red-100 text-red-900 border border-red-400";
-  const grayClasses = "bg-gray-100 text-gray-900 border border-gray-400";
+  const colorClasses = {
+    gray: "border-t-4 border-gray-500",
+    orange: "border-t-4 border-orange-700",
+    red: "border-t-4 border-red-500",
+    blue: "bg-blue-100 text-blue-900 border border-blue-400",
+  };
 
-  // Determinar las clases basadas en el color
-  const colorClasses =
-    color === "blue"
-      ? blueClasses
-      : color === "green"
-      ? greenClasses
-      : color === "red"
-      ? redClasses
-      : color === "gray"
-      ? grayClasses
-      : "";
+  const changeColor = change && change > 0 ? "text-green-600" : "text-red-600";
 
   return (
-    <div className={`${baseClasses} ${colorClasses} ${className}`}>
-      <h2 className="text-lg">{title}</h2>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className={`${baseClasses} ${colorClasses[color]} ${className}`}>
+      <h2 className="text-x uppercase text-gray-500 mb-2">{title}</h2>
+      <div className="flex items-baseline justify-between">
+        <p className="text-4xl font-bold text-gray-900">{value}</p>
+        {change !== undefined && (
+          <p className={`text-sm ${changeColor}`}>
+            {change > 0 ? "▲" : "▼"} {Math.abs(change)}%
+            <span className="text-gray-500 ml-1">change</span>
+          </p>
+        )}
+      </div>
+      {lastWeek !== undefined && (
+        <p className="text-sm text-gray-500 mt-2">{lastWeek} last week</p>
+      )}
     </div>
   );
 };

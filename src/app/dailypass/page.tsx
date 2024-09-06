@@ -21,6 +21,16 @@ const DailyPassCustomerPage: React.FC = () => {
   }, []);
 
   const columns: ColumnDef<Customer>[] = [
+    {
+      accessorKey: "fullName",
+      header: "Nombre Completo",
+      cell: ({ row }) => {
+        const name = row.original.name || "N/A";
+        const sureName = row.original.sureName || "N/A";
+
+        return <div>{name + " " + sureName}</div>;
+      },
+    },
     { accessorKey: "name", header: "Nombre" },
     { accessorKey: "sureName", header: "Apellido" },
     {
@@ -49,7 +59,7 @@ const DailyPassCustomerPage: React.FC = () => {
   return (
     <div>
       <div className="w-full flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold text-gray-700">
+        <h1 className="text-2xl font-bold text-blue-900">
           Clientes de Pago Diario
         </h1>
       </div>

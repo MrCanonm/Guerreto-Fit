@@ -132,7 +132,7 @@ const CustomerPage: React.FC = () => {
   return (
     <div>
       <div className="w-full flex justify-between items-center p-4">
-        <h1 className="text-2xl font-bold text-gray-700">Gestionar Pagos</h1>
+        <h1 className="text-2xl font-bold text-blue-900">Gestionar Pagos</h1>
 
         <CustomButton
           variant="primary"

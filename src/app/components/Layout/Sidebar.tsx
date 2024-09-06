@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
-import { IconType } from "react-icons";
 import Image from "next/image";
 import { FaCaretDown, FaCaretUp, FaUserCircle } from "react-icons/fa";
 
@@ -60,8 +59,8 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
                   !isExpanded ? "justify-center" : ""
                 } text-left space-x-2 py-2 px-2 rounded-md ${
                   isActive
-                    ? "bg-blue-100 text-blue-600 sidebar-arrow"
-                    : "text-white hover:bg-blue-100 hover:text-blue-600"
+                    ? "bg-blue-900 text-white sidebar-arrow"
+                    : "text-white hover:bg-blue-100 hover:text-orange-600"
                 }`}
               >
                 {item.icon}
@@ -100,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
 
   return (
     <aside
-      className={`bg-blue-900 text-white min-h-screen flex flex-col justify-between transition-all duration-300 ${
+      className={`bg-orange-900 text-white min-h-screen flex flex-col justify-between transition-all duration-300 ${
         isExpanded ? "w-64" : "w-20"
       }`}
     >

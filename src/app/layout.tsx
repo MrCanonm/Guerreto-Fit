@@ -1,15 +1,11 @@
 import React from "react";
 import Sidebar, { NavItem } from "./components/Layout/Sidebar";
 import {
-  FaBoxOpen,
   FaCashRegister,
-  FaCreditCard,
   FaHome,
   FaLandmark,
   FaMoneyBillAlt,
   FaMoneyCheckAlt,
-  FaTags,
-  FaUser,
 } from "react-icons/fa";
 import "./globals.css";
 import { Toaster } from "sonner";

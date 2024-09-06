@@ -62,6 +62,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
             type="text"
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={customer.name}
+            disabled
             readOnly
           />
         </div>
@@ -71,6 +72,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
           <input
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={customer.sureName}
+            disabled
             readOnly
           />
         </div>
@@ -80,6 +82,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
           <input
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={customer.membership?.dni}
+            disabled
             readOnly
           />
         </div>
@@ -89,6 +92,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
           <input
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={customer.membership?.email}
+            disabled
             readOnly
           />
         </div>
@@ -98,6 +102,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
           <input
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={customer.membership?.phone}
+            disabled
             readOnly
           />
         </div>
@@ -107,12 +112,13 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
           <input
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={customer.membership?.startDate.toLocaleString()}
+            disabled
             readOnly
           />
         </div>
 
         <div>
-          <label className="block">Meses a Pagar</label>
+          <label className="block">Meses a Renovar</label>
           <select
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             {...register("monthsToPay", { required: true })}
@@ -134,6 +140,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
             type="number"
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={membershipPrice}
+            disabled
             readOnly
           />
         </div>
@@ -144,6 +151,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
             type="number"
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
             value={totalAmount}
+            disabled
             readOnly
           />
         </div>
