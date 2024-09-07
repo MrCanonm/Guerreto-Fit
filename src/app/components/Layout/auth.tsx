@@ -1,17 +1,42 @@
-// pages/index.tsx (o pages/index.js si usas JavaScript)
-import React from "react";
+"use client";
+
+import { useStadisctisService } from "@/services/stadistics";
+import { useEffect } from "react";
 
 const Home = () => {
+  const {
+    statisticsData,
+    servicePriceData,
+    statsLoading,
+    priceLoading,
+    statsError,
+    priceError,
+    getAllStadistics,
+    getActualServicePrice,
+  } = useStadisctisService();
+
+  useEffect(() => {
+    getAllStadistics();
+    getActualServicePrice();
+  }, []);
+
+  // Mientras carga
+  if (statsLoading || priceLoading) return <div>Loading...</div>;
+
+  // Mostrar un mensaje de error si falla la carga
+  if (statsError || priceError)
+    return <div>Error loading data: {statsError || priceError}</div>;
+
   return (
     <div className="h-screen flex">
-      <div className="flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 justify-around items-center">
+      <div className="flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 i justify-around items-center">
         <div>
           <h1 className="text-white font-bold text-4xl font-sans">GoFinance</h1>
           <p className="text-white mt-1">
             The most popular peer to peer lending at SEA
           </p>
           <button
-            type="button"
+            type="submit"
             className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
           >
             Read More
@@ -33,15 +58,17 @@ const Home = () => {
               stroke="currentColor"
             >
               <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
                 d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
               />
             </svg>
             <input
               className="pl-2 outline-none border-none"
               type="text"
+              name=""
+              id=""
               placeholder="Email Address"
             />
           </div>
@@ -53,14 +80,16 @@ const Home = () => {
               fill="currentColor"
             >
               <path
-                fillRule="evenodd"
+                fill-rule="evenodd"
                 d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                clipRule="evenodd"
+                clip-rule="evenodd"
               />
             </svg>
             <input
               className="pl-2 outline-none border-none"
-              type="password"
+              type="text"
+              name=""
+              id=""
               placeholder="Password"
             />
           </div>

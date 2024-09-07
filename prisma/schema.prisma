@@ -76,6 +76,34 @@ model Services {
   @@map("services")
 }
 
+// model Person {
+//   id Int                        @id @default(autoincrement())
+//   name String
+//   age Int
+//   email String
+//   phone String
+//   address String
+
+//   @@map("person")
+// }
+// model AppUser {
+//   id Int                        @id @default(autoincrement())
+//   accessName String
+//   accceshash String
+//   role_id Int
+
+//   role Role @relation(fields: [role_id], references: [id])
+//   @@map("AppUser")
+// }
+
+// model Role {
+//   id Int                        @id @default(autoincrement())
+//   name String
+//   AppUser  AppUser[] 
+
+//   @@map("role")
+// }
+
 enum CustomerType {
   MEMBRESIA
   PASE_DIARIO

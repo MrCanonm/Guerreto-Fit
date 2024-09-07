@@ -40,3 +40,35 @@ export async function GET() {
     );
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { serviceId, monto } = body;
+
+    const existingService = await prisma.services.findFirst({
+      where: { id: serviceId },
+    });
+
+    if (!existingService) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
+
+    const servicePrice = await prisma.servicePrices.create({
+      data: {
+        serviceId: existingService.id,
+        monto: parseFloat(monto),
+        fecha: new Date(),
+      },
+    });
+
+    return NextResponse.json(servicePrice, { status: 201 });
+  } catch (error) {
+    console.error("Error creating service price:", error);
+
+    return NextResponse.json(
+      { error: "Error creating service price" },
+      { status: 500 }
+    );
+  }
+}

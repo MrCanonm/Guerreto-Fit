@@ -11,7 +11,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 
 const navItems: NavItem[] = [
-  { name: "Home", path: "/", icon: <FaHome /> },
+  { name: "Home", path: "/home", icon: <FaHome /> },
   {
     name: "Gestion de Pagos",
     path: "",
@@ -22,6 +22,7 @@ const navItems: NavItem[] = [
       { name: "Pago Diario", path: "/dailypass", icon: <FaMoneyBillAlt /> },
     ],
   },
+  { name: "Gestion de Precios", path: "/serviceprice", icon: <FaHome /> },
 ];
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
