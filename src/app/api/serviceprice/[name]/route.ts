@@ -9,9 +9,12 @@ interface Params {
 }
 export async function GET(request: Request, { params }: Params) {
   const { name } = params;
+  const today = new Date();
+
   try {
     const servicePrice = await prisma.servicePrices.findFirst({
-      where: { service: { serviceName: name } },
+      where: { service: { serviceName: name }, fecha: { lte: today } },
+      orderBy: { fecha: "desc" },
     });
 
     if (!servicePrice) {
