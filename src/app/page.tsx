@@ -19,8 +19,7 @@ const Home = () => {
       if (response.token) {
         // Guarda el token en localStorage
         localStorage.setItem("authToken", response.token);
-        // Redirige al dashboard o una página protegida
-        router.push("/home");
+        router.push("/pages/home");
       }
     } catch (err) {
       setError("Login failed. Please check your credentials.");
@@ -97,5 +96,4 @@ const Home = () => {
     </div>
   );
 };
-
 export default Home;

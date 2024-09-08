@@ -1,35 +1,32 @@
 "use client";
 
-import { useCustomerService } from "@/services/customer";
-import { useEffect, useState } from "react";
-import {
-  Customer,
-  Membership,
-  ServicePrice,
-} from "../components/Customer/customerInterfaces";
-import { useNotification } from "../components/Common/Notification";
-import { SubmitHandler } from "react-hook-form";
+import CustomButton from "@/app/components/Common/CustomButton";
 import { DataTable } from "@/app/components/Common/dataTable/DataTable";
-import { ColumnDef } from "@tanstack/react-table";
 import {
   Dropdown,
   DropdownContainer,
   DropdownItem,
   DropdownTrigger,
 } from "@/app/components/Common/dataTable/Dropdown";
-import { FaEllipsisH } from "react-icons/fa";
+import StatusBadge from "@/app/components/Common/dataTable/StatusBadge";
+import Modal from "@/app/components/Common/Modal";
+import { useNotification } from "@/app/components/Common/Notification";
+import SearchBar from "@/app/components/Common/SearchBar";
+import {
+  Customer,
+  Membership,
+} from "@/app/components/Customer/customerInterfaces";
+import RenewMembershipForm from "@/app/components/Customer/RenewMembershipForm";
+import { formatter } from "@/app/components/utils/fomartValue";
+import { formatPhoneNumber } from "@/app/components/utils/formatCellNumber";
+import { formatDNI } from "@/app/components/utils/formatDNI ";
+import { generatePDF } from "@/app/components/utils/generatePDF";
 import { Button } from "@/components/ui/button";
-import Modal from "../components/Common/Modal";
-import { formatter } from "../components/utils/fomartValue";
-import RenewMembershipForm from "../components/Customer/RenewMembershipForm";
-import CustomButton from "../components/Common/CustomButton";
-import SearchBar from "../components/Common/SearchBar";
-import { formatPhoneNumber } from "../components/utils/formatCellNumber";
-import { formatDNI } from "../components/utils/formatDNI ";
-import StatusBadge from "../components/Common/dataTable/StatusBadge";
-import { MembershipReceiptPDF } from "../components/Customer/GenerateReceiptPDF";
-import { pdf } from "@react-pdf/renderer";
-import { generatePDF } from "../components/utils/generatePDF";
+import { useCustomerService } from "@/services/customer";
+import { ColumnDef } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
+import { SubmitHandler } from "react-hook-form";
+import { FaEllipsisH } from "react-icons/fa";
 
 const MembershipCustomerPage: React.FC = () => {
   const {

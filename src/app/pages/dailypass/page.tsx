@@ -4,14 +4,8 @@ import { useCustomerService } from "@/services/customer";
 import { useEffect } from "react";
 import { DataTable } from "@/app/components/Common/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  Dropdown,
-  DropdownTrigger,
-} from "@/app/components/Common/dataTable/Dropdown";
-import { FaEllipsisH } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
-import { Customer } from "../components/Customer/customerInterfaces";
-import { formatter } from "../components/utils/fomartValue";
+import { Customer } from "@/app/components/Customer/customerInterfaces";
+import { formatter } from "@/app/components/utils/fomartValue";
 
 const DailyPassCustomerPage: React.FC = () => {
   const { data: customers, getAllDailyPasses } = useCustomerService();

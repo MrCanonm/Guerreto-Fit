@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react";
 
 import CustomButton from "@/app/components/Common/CustomButton";
-import { useNotification } from "../components/Common/Notification";
 import { SubmitHandler } from "react-hook-form";
 import { DataTable } from "@/app/components/Common/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { usePriceService } from "@/services/serviceprice";
-import { ServicePrice } from "../components/ServicePrices/servicepriceinterface";
-import { formatter } from "../components/utils/fomartValue";
-import CreateServicePriceForm from "../components/ServicePrices/CreateServicePriceForm";
-import Modal from "../components/Common/Modal";
+import { ServicePrice } from "@/app/components/ServicePrices/servicepriceinterface";
+import { useNotification } from "@/app/components/Common/Notification";
+import { formatter } from "@/app/components/utils/fomartValue";
+import Modal from "@/app/components/Common/Modal";
+import CreateServicePriceForm from "@/app/components/ServicePrices/CreateServicePriceForm";
 
 const ServicePricePage: React.FC = () => {
   const {

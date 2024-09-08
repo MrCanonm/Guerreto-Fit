@@ -1,19 +1,19 @@
 "use client";
 
-import { useCustomerService } from "@/services/customer";
-import { useEffect, useState } from "react";
+import CustomButton from "@/app/components/Common/CustomButton";
+import { DataTable } from "@/app/components/Common/dataTable/DataTable";
+import Modal from "@/app/components/Common/Modal";
+import { useNotification } from "@/app/components/Common/Notification";
+import CreateCustomerForm from "@/app/components/Customer/CreateCustomerForm";
 import {
   Customer,
   CustomerType,
-} from "../components/Customer/customerInterfaces";
-import CustomButton from "@/app/components/Common/CustomButton";
-import { useNotification } from "../components/Common/Notification";
-import { SubmitHandler } from "react-hook-form";
-import { DataTable } from "@/app/components/Common/dataTable/DataTable";
+} from "@/app/components/Customer/customerInterfaces";
+import { formatter } from "@/app/components/utils/fomartValue";
+import { useCustomerService } from "@/services/customer";
 import { ColumnDef } from "@tanstack/react-table";
-import Modal from "../components/Common/Modal";
-import CreateCustomerForm from "../components/Customer/CreateCustomerForm";
-import { formatter } from "../components/utils/fomartValue";
+import { useEffect, useState } from "react";
+import { SubmitHandler } from "react-hook-form";
 
 const CustomerPage: React.FC = () => {
   const {

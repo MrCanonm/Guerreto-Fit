@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
-import { authMiddleware } from "@/app/middleaware/authMiddleaware";
+import { authMiddleware } from "@/middleaware/authMiddleaware";
 
 const prisma = new PrismaClient();
 

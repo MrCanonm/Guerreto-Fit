@@ -1,9 +1,9 @@
 "use client";
 import { useStadisctisService } from "@/services/stadistics";
 import { useEffect, useState } from "react";
-import StatCard from "../components/Common/stadisticsCards/StatCard";
-import { apiRequest } from "../components/utils/api";
 import { useRouter } from "next/navigation";
+import { apiRequest } from "@/app/components/utils/apiRequest";
+import StatCard from "@/app/components/Common/stadisticsCards/StatCard";
 
 const HomeDasboard = () => {
   const {
@@ -17,28 +17,12 @@ const HomeDasboard = () => {
     getActualServicePrice,
   } = useStadisctisService();
 
-  const router = useRouter();
-  const [protectedData, setProtectedData] = useState(null);
   const [protectedDataError, setProtectedDataError] = useState(null);
 
   useEffect(() => {
     getAllStadistics();
     getActualServicePrice();
-    fetchProtectedData();
   }, []);
-
-  const fetchProtectedData = async () => {
-    const token = localStorage.getItem("authToken");
-    if (!token)
-      // Si no hay token, redirigir a la página de login
-      router.push("/");
-    try {
-      const data = await apiRequest("/api/dashboard", "GET");
-      setProtectedData(data);
-    } catch (error) {
-      setProtectedDataError(null);
-    }
-  };
 
   // Mientras carga
   if (statsLoading || priceLoading) return <div>Loading...</div>;

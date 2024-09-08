@@ -1,5 +1,5 @@
+import { verifyToken } from "@/app/components/utils/generate-jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "../components/utils/generate-jwt";
 
 export function authMiddleware(
   handler: (req: NextRequest) => Promise<NextResponse>
