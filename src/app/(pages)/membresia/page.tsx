@@ -155,7 +155,6 @@ const MembershipCustomerPage: React.FC = () => {
     setRenewModalIsOpen(true);
   };
   const handleSubmitReceipt: SubmitHandler<Customer> = async (data) => {
-    console.log(data.membership?.servicePrice.monto);
     generatePDF(data);
   };
 

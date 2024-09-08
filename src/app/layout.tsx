@@ -14,7 +14,7 @@ import { Toaster } from "sonner";
 import { usePathname } from "next/navigation";
 
 const navItems: NavItem[] = [
-  { name: "Home", path: "/pages/home", icon: <FaHome /> },
+  { name: "Home", path: "/home", icon: <FaHome /> },
   {
     name: "Gestion de Pagos",
     path: "",
@@ -22,22 +22,22 @@ const navItems: NavItem[] = [
     children: [
       {
         name: "Todos Los Pagos",
-        path: "/pages/customer",
+        path: "/customer",
         icon: <FaLandmark />,
       },
       {
         name: "Membresia",
-        path: "/pages/membresia",
+        path: "/membresia",
         icon: <FaMoneyCheckAlt />,
       },
       {
         name: "Pago Diario",
-        path: "/pages/dailypass",
+        path: "/dailypass",
         icon: <FaMoneyBillAlt />,
       },
     ],
   },
-  { name: "Gestion de Precios", path: "/pages/serviceprice", icon: <FaHome /> },
+  { name: "Gestion de Precios", path: "/serviceprice", icon: <FaHome /> },
 ];
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -53,7 +53,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           expand={true}
           duration={5000}
         />
-        {pathname !== "/" && (
+        {pathname !== "/loging" && pathname !== "/" && (
           <div className="flex flex-col  scrollbar-thin scrollbar-webkit">
             <div className="flex flex-1 overflow-hidden">
               <Sidebar navItems={navItems} />
@@ -63,6 +63,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         )}
+        {pathname === "/loging" && <div className="">{children}</div>}
         {pathname === "/" && <div className="">{children}</div>}
       </body>
     </html>

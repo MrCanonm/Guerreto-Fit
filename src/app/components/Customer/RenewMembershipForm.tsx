@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
+import { useForm, SubmitHandler, useWatch } from "react-hook-form";
 import { Customer, CustomerType, Membership } from "./customerInterfaces";
 import CustomButton from "../Common/CustomButton";
 import { useCustomerService } from "@/services/customer";
@@ -20,7 +20,6 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
     handleSubmit,
     reset,
     control,
-    setValue,
     formState: { errors },
   } = useForm<Customer & Membership>({
     defaultValues: {
@@ -28,7 +27,6 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
       monthsToPay: 1, // Valor inicial para meses a pagar
     },
   });
-
   const { getServicePrice } = useCustomerService();
 
   const monthsToPay = useWatch({ control, name: "monthsToPay" });
