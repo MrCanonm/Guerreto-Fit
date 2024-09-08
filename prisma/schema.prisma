@@ -76,33 +76,36 @@ model Services {
   @@map("services")
 }
 
-// model Person {
-//   id Int                        @id @default(autoincrement())
-//   name String
-//   age Int
-//   email String
-//   phone String
-//   address String
+model Person {
+  id Int                        @id @default(autoincrement())
+  name String
+  sureName String
+  age Int
+  email String?
+  phone String
 
-//   @@map("person")
-// }
-// model AppUser {
-//   id Int                        @id @default(autoincrement())
-//   accessName String
-//   accceshash String
-//   role_id Int
+  AppUser  AppUser[]
+  @@map("person")
+}
+model AppUser {
+  id String @id @default(uuid())
+  accessName String
+  accessHash String
+  personId Int
+  roleId Int
 
-//   role Role @relation(fields: [role_id], references: [id])
-//   @@map("AppUser")
-// }
+  person Person @relation(fields: [personId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+  @@map("appUser")
+}
 
-// model Role {
-//   id Int                        @id @default(autoincrement())
-//   name String
-//   AppUser  AppUser[] 
+model Role {
+  id Int                        @id @default(autoincrement())
+  name String
+  AppUser  AppUser[] 
 
-//   @@map("role")
-// }
+  @@map("role")
+}
 
 enum CustomerType {
   MEMBRESIA

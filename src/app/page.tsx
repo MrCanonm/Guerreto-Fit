@@ -1,29 +1,44 @@
-// pages/index.tsx (o pages/index.js si usas JavaScript)
-import React from "react";
+"use client";
+
+import { useAuthService } from "@/services/auth";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 const Home = () => {
+  const [accessName, setAccessName] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const { login, loading } = useAuthService();
+  const router = useRouter();
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const response = await login({ accessName, password });
+      if (response.token) {
+        // Guarda el token en localStorage
+        localStorage.setItem("authToken", response.token);
+        // Redirige al dashboard o una página protegida
+        router.push("/home");
+      }
+    } catch (err) {
+      setError("Login failed. Please check your credentials.");
+    }
+  };
+
   return (
     <div className="h-screen flex">
-      <div className="flex w-1/2 bg-gradient-to-tr from-blue-800 to-purple-700 justify-around items-center">
-        <div>
-          <h1 className="text-white font-bold text-4xl font-sans">GoFinance</h1>
-          <p className="text-white mt-1">
-            The most popular peer to peer lending at SEA
-          </p>
-          <button
-            type="button"
-            className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
-          >
-            Read More
-          </button>
-        </div>
+      <div className="flex w-1/2 bg-gradient-to-tr from-orange-900 to-blue-900 justify-around items-center">
+        {/* Left side content remains the same */}
       </div>
       <div className="flex w-1/2 justify-center items-center bg-white">
-        <form className="bg-white">
+        <form className="bg-white" onSubmit={handleSubmit}>
           <h1 className="text-gray-800 font-bold text-2xl mb-1">
-            Hello Again!
+            Hola de nuevo!
           </h1>
-          <p className="text-sm font-normal text-gray-600 mb-7">Welcome Back</p>
+          <p className="text-sm font-normal text-gray-600 mb-7">Bienvenido</p>
+          {error && <p className="text-red-500 mb-4">{error}</p>}
           <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -42,12 +57,13 @@ const Home = () => {
             <input
               className="pl-2 outline-none border-none"
               type="text"
-              placeholder="Email Address"
+              placeholder="Nombre de usuario"
+              value={accessName}
+              onChange={(e) => setAccessName(e.target.value)}
             />
           </div>
           <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
             <svg
-              xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 text-gray-400"
               viewBox="0 0 20 20"
               fill="currentColor"
@@ -61,17 +77,20 @@ const Home = () => {
             <input
               className="pl-2 outline-none border-none"
               type="password"
-              placeholder="Password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <button
             type="submit"
-            className="block w-full bg-indigo-600 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
+            className="block w-full bg-blue-900 mt-4 py-2 rounded-2xl text-white font-semibold mb-2"
+            disabled={loading}
           >
-            Login
+            {loading ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
           <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
-            Forgot Password ?
+            Olvidaste tu contraseña ?
           </span>
         </form>
       </div>

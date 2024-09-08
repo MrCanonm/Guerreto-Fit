@@ -45,7 +45,6 @@ export async function POST(request: Request) {
           customerType,
         },
       });
-
       if (customerType === CustomerType.PASE_DIARIO && dailyPass) {
         console.log("Received payload:", body);
         const servicePrice = await prisma.servicePrices.findFirst({
@@ -86,7 +85,11 @@ export async function POST(request: Request) {
         }
 
         const servicePrice = await prisma.servicePrices.findFirst({
-          where: { service: { serviceName: "MEMBRESIA" } },
+          where: {
+            service: { serviceName: "MEMBRESIA" },
+            fecha: { lt: new Date() },
+          },
+          orderBy: { fecha: "desc" },
         });
 
         if (!servicePrice) {
@@ -102,6 +105,7 @@ export async function POST(request: Request) {
 
         const totalAmount =
           Number(membership.monthsToPay) * Number(servicePrice.monto);
+
         const createdMembership = await prisma.membership.create({
           data: {
             email: membership.email,
@@ -117,9 +121,8 @@ export async function POST(request: Request) {
         });
 
         console.log("Created Membership:", createdMembership);
+        return { ...newCustomer, membership: createdMembership };
       }
-
-      return newCustomer;
     });
 
     return NextResponse.json(result, { status: 201 });

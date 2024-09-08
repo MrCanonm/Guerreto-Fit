@@ -44,8 +44,11 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
       monthsToPay &&
       membershipPrice
     ) {
-      setTotalAmount(Number(monthsToPay) * Number(membershipPrice));
-      setValue("membership.totalAmout", membershipPrice);
+      const total = Number(monthsToPay) * Number(membershipPrice);
+      setTotalAmount(total);
+      setValue("membership.totalAmout", total); // Corregido
+      console.log(membershipPrice);
+      console.log(total);
     } else if (
       selectedCustomerType === CustomerType.PASE_DIARIO &&
       dailyPassPrice
@@ -85,6 +88,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     await onSubmit(data);
     if (data.customerType === CustomerType.MEMBRESIA) {
       generatePDF(data);
+      console.log("Generando PDF", data.membership?.endDate);
     }
   };
 

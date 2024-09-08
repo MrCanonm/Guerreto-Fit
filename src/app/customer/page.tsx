@@ -11,12 +11,6 @@ import { useNotification } from "../components/Common/Notification";
 import { SubmitHandler } from "react-hook-form";
 import { DataTable } from "@/app/components/Common/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  Dropdown,
-  DropdownTrigger,
-} from "@/app/components/Common/dataTable/Dropdown";
-import { FaEllipsisH } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
 import Modal from "../components/Common/Modal";
 import CreateCustomerForm from "../components/Customer/CreateCustomerForm";
 import { formatter } from "../components/utils/fomartValue";
@@ -26,12 +20,9 @@ const CustomerPage: React.FC = () => {
     data: customers,
     getAllCustomers,
     createCustomer,
-    updateCustomer,
   } = useCustomerService();
 
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [currentCustomer, setCurrentCustomer] = useState<Customer | null>(null);
 
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
 
@@ -41,8 +32,6 @@ const CustomerPage: React.FC = () => {
 
   const handleModalClose = () => {
     setCreateModalIsOpen(false);
-    setEditModalIsOpen(false);
-    setCurrentCustomer(null);
   };
 
   const onSubmit: SubmitHandler<Customer> = async (formData) => {
@@ -55,14 +44,6 @@ const CustomerPage: React.FC = () => {
           description: `Se ha guardado el cliente ${formData.name}`,
         });
         setCreateModalIsOpen(false);
-      }
-
-      if (editModalIsOpen && currentCustomer) {
-        await updateCustomer(currentCustomer.id, formData);
-        showSuccess("Éxito!", {
-          description: `Se ha actualizado el cliente ${formData.name}`,
-        });
-        setEditModalIsOpen(false);
       }
 
       getAllCustomers();
