@@ -5,10 +5,12 @@ export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
-export async function handler(req: NextRequest) {
+// Explicitly define GET method
+export const GET = authMiddleware(async (req: NextRequest) => {
   if (req.method !== "GET") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
   }
+
   try {
     const activeMemberships = await prisma.membership.findMany({
       include: { servicePrice: true },
@@ -48,7 +50,9 @@ export async function handler(req: NextRequest) {
       0
     );
 
-    const totalAmmout = totalMembershipAmount + totalDailyPassAmount;
+    const totalAmount = totalMembershipAmount + totalDailyPassAmount;
+
+    // Construct response object
     const response = {
       totalActiveMemberships,
       todayDailyPassCount: todayDailyPass.length,
@@ -56,13 +60,11 @@ export async function handler(req: NextRequest) {
       totalMembershipAmount,
       totalDailyPassAmountToday,
       totalDailyPassAmount,
-      totalAmmout,
+      totalAmount, // Fix typo (from `totalAmmout` to `totalAmount`)
     };
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Error fetching data" }, { status: 500 });
   }
-}
-
-export const GET = authMiddleware(handler);
+});
