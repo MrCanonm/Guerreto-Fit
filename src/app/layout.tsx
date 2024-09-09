@@ -53,7 +53,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           expand={true}
           duration={5000}
         />
-        {pathname !== "/loging" && pathname !== "/" && (
+        {pathname !== "/login" && pathname !== "/" && (
           <div className="flex flex-col  scrollbar-thin scrollbar-webkit">
             <div className="flex flex-1 overflow-hidden">
               <Sidebar navItems={navItems} />
@@ -63,7 +63,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </div>
         )}
-        {pathname === "/loging" && <div className="">{children}</div>}
+        {pathname === "/login" && <div className="">{children}</div>}
         {pathname === "/" && <div className="">{children}</div>}
       </body>
     </html>

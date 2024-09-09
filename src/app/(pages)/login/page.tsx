@@ -16,15 +16,15 @@ const Home = () => {
     setError("");
     try {
       const response = await login({ accessName, password });
-      if (response.token) {
-        // Guarda el token en localStorage
-        localStorage.setItem("authToken", response.token);
+      if (response.message === "Inicio de sesión exitoso") {
+        // La cookie ya ha sido establecida por el backend
         router.push("/home");
       }
     } catch (err) {
       setError("Login failed. Please check your credentials.");
     }
   };
+  
 
   return (
     <div className="h-screen flex">

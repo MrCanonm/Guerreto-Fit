@@ -10,12 +10,16 @@ import {
   CustomerType,
 } from "@/app/components/Customer/customerInterfaces";
 import { formatter } from "@/app/components/utils/fomartValue";
+import { useAuth } from "@/hooks/useAuth";
 import { useCustomerService } from "@/services/customer";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 const CustomerPage: React.FC = () => {
+
+  useAuth();
+  
   const {
     data: customers,
     getAllCustomers,

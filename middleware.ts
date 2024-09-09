@@ -1,21 +1,26 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/app/components/utils/generate-jwt";
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("authToken");
-  const { pathname } = req.nextUrl;
+  // Obtener la cookie 'authToken'
+  const tokenCookie = req.cookies.get("authToken");
 
-  if (!token && pathname !== "/") {
-    return NextResponse.redirect(new URL("/", req.url));
+  // Si no existe la cookie
+  if (!tokenCookie) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (token && pathname === "/") {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
+  // Obtener el valor de la cookie
+  const token = tokenCookie.value;
 
-  return NextResponse.next();
+  try {
+    verifyToken(token); // Verifica si el token es válido
+    return NextResponse.next(); // Permitir el acceso si el token es válido
+  } catch (error) {
+    return NextResponse.redirect(new URL("/login", req.url)); // Redirige al login si el token es inválido
+  }
 }
 
 export const config = {
-  matcher: ["/", "/((?!/|api).{1,})"],
+  matcher: ["/home", "/customer", "/api/stadistics", "/api/customer/:path*"], // Rutas a proteger
 };
