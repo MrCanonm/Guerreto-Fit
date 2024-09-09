@@ -17,9 +17,8 @@ import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 const CustomerPage: React.FC = () => {
+  const { isLoading, isAuthenticated } = useAuth();
 
-  useAuth();
-  
   const {
     data: customers,
     getAllCustomers,
@@ -31,8 +30,10 @@ const CustomerPage: React.FC = () => {
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
 
   useEffect(() => {
-    getAllCustomers();
-  }, []);
+    if (isAuthenticated) {
+      getAllCustomers();
+    }
+  }, [isAuthenticated]);
 
   const handleModalClose = () => {
     setCreateModalIsOpen(false);
@@ -113,6 +114,14 @@ const CustomerPage: React.FC = () => {
 
     { accessorKey: "customerType", header: "Tipo de Pago" },
   ];
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div>

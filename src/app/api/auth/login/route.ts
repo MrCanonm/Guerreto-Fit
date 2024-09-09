@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
+import { generateToken } from "@/app/components/utils/generate-jwt";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcrypt";
-import { generateToken } from "@/app/components/utils/generate-jwt";
+import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient(); // Crear una instancia de la base de datos
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -36,10 +36,20 @@ export async function POST(request: Request) {
       role: appUser.role.name,
     });
 
-    return NextResponse.json(
-      { message: "Inicio de sesión exitoso", token },
+    const response = NextResponse.json(
+      { message: "Inicio de sesión exitoso" },
       { status: 200 }
     );
+
+    // Establecer la cookie
+    response.cookies.set("authToken", token, {
+      httpOnly: false, // Cambiar para produccion
+      secure: process.env.NODE_ENV === "production", // Solo en HTTPS en producción
+      path: "/",
+      maxAge: 60 * 60 * 24, // 24 horas
+    });
+
+    return response;
   } catch (error) {
     console.error("Error authenticating:", error);
     return NextResponse.json(

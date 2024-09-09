@@ -24,7 +24,6 @@ const Home = () => {
       setError("Login failed. Please check your credentials.");
     }
   };
-  
 
   return (
     <div className="h-screen flex">

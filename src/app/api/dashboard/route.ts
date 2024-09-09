@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { authMiddleware } from "@/middleaware/authMiddleaware";
+
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
-// Explicitly define GET method
-export const GET = authMiddleware(async (req: NextRequest) => {
-  if (req.method !== "GET") {
-    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-  }
-
+export const GET = async (req: NextRequest) => {
   try {
     const activeMemberships = await prisma.membership.findMany({
       include: { servicePrice: true },
@@ -60,11 +55,11 @@ export const GET = authMiddleware(async (req: NextRequest) => {
       totalMembershipAmount,
       totalDailyPassAmountToday,
       totalDailyPassAmount,
-      totalAmount, // Fix typo (from `totalAmmout` to `totalAmount`)
+      totalAmount,
     };
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Error fetching data" }, { status: 500 });
   }
-});
+};

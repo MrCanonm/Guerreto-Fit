@@ -6,9 +6,11 @@ import { DataTable } from "@/app/components/Common/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { Customer } from "@/app/components/Customer/customerInterfaces";
 import { formatter } from "@/app/components/utils/fomartValue";
+import { useAuth } from "@/hooks/useAuth";
 
 const DailyPassCustomerPage: React.FC = () => {
   const { data: customers, getAllDailyPasses } = useCustomerService();
+  useAuth();
 
   useEffect(() => {
     getAllDailyPasses();

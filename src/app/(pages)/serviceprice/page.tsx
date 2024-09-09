@@ -13,6 +13,7 @@ import { useNotification } from "@/app/components/Common/Notification";
 import { formatter } from "@/app/components/utils/fomartValue";
 import Modal from "@/app/components/Common/Modal";
 import CreateServicePriceForm from "@/app/components/ServicePrices/CreateServicePriceForm";
+import { useAuth } from "@/hooks/useAuth";
 
 const ServicePricePage: React.FC = () => {
   const {
@@ -22,6 +23,7 @@ const ServicePricePage: React.FC = () => {
   } = usePriceService();
 
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  useAuth();
 
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
 

@@ -2,10 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import Image from "next/image";
 import { FaCaretDown, FaCaretUp, FaUserCircle } from "react-icons/fa";
+import { useAuthService } from "@/services/auth";
 
 export interface NavItem {
   name: string;
@@ -24,6 +25,9 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  const { logout } = useAuthService();
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -91,8 +95,14 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleLogout = () => {
-    // Lógica de logout
+  const handleLogout = async () => {
+    const result = await logout();
+
+    if (result.success) {
+      router.push("/login");
+    } else {
+      alert(result.error);
+    }
   };
 
   const user = { name: "Guerrero Fit" };

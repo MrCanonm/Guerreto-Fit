@@ -22,6 +22,7 @@ import { formatPhoneNumber } from "@/app/components/utils/formatCellNumber";
 import { formatDNI } from "@/app/components/utils/formatDNI ";
 import { generatePDF } from "@/app/components/utils/generatePDF";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
 import { useCustomerService } from "@/services/customer";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
@@ -48,6 +49,7 @@ const MembershipCustomerPage: React.FC = () => {
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
 
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
+  useAuth();
 
   useEffect(() => {
     getAllMemberships();

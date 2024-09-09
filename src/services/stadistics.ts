@@ -34,6 +34,7 @@ export const useStadisctisService = () => {
     await fetchServicePrices(
       servicePriceResource,
       "GET",
+
       undefined,
       "Error fetching service prices"
     );
