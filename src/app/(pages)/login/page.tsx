@@ -44,11 +44,11 @@ const Home = () => {
             className="mt-4"
           />
           {/* <button
-    type="button"
-    className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
-  >
-    Read More
-  </button> */}
+            type="button"
+            className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
+          >
+            Read More
+          </button> */}
         </div>
       </div>
       <div className="flex w-1/2 justify-center items-center bg-white">
