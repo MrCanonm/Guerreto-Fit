@@ -135,8 +135,6 @@ export const useCustomerService = () => {
       undefined,
       "Error fetching daily passes"
     );
-
-    // Nuevas funciones para obtener los precios
   };
 
   const getServicePrice = async (name: string) => {

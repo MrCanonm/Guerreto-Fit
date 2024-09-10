@@ -24,11 +24,11 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     },
   });
 
-  const { getServicePrice } = useCustomerService();
+  const { getServicePrice, data } = useCustomerService();
 
   const [selectedCustomerType, setSelectedCustomerType] =
     useState<CustomerType | null>(null);
-  const [dailyPassPrice, setDailyPassPrice] = useState<number | null>(null);
+  const [servicePrice, setServicePrice] = useState<number | null>(null);
 
   const monthsToPay = useWatch({ control, name: "membership.monthsToPay" });
   const membershipPrice = useWatch({
@@ -51,13 +51,13 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
       console.log(total);
     } else if (
       selectedCustomerType === CustomerType.PASE_DIARIO &&
-      dailyPassPrice
+      servicePrice
     ) {
-      setTotalAmount(dailyPassPrice);
+      setTotalAmount(servicePrice);
     } else {
       setTotalAmount(0);
     }
-  }, [selectedCustomerType, monthsToPay, membershipPrice, dailyPassPrice]);
+  }, [selectedCustomerType, monthsToPay, membershipPrice, servicePrice]);
 
   const handleCancel = () => {
     reset();
@@ -70,16 +70,16 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     if (type === CustomerType.PASE_DIARIO) {
       try {
         const priceData = await getServicePrice("PASEDIARIO");
-        setDailyPassPrice(priceData.monto);
+        setServicePrice(priceData.monto);
       } catch (error) {
         console.error("Error fetching daily pass price", error);
       }
     } else if (type === CustomerType.MEMBRESIA) {
       const priceData = await getServicePrice("MEMBRESIA");
-      setDailyPassPrice(priceData.monto);
+      setServicePrice(priceData.monto);
       setValue("membership.servicePrice.monto", priceData.monto);
     } else {
-      setDailyPassPrice(null);
+      setServicePrice(null);
       setValue("membership.servicePrice.monto", 0);
     }
   };
@@ -241,7 +241,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <input
                 type="number"
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                value={dailyPassPrice ?? ""}
+                value={servicePrice ?? ""}
                 readOnly
               />
               {errors.monto && (
@@ -271,7 +271,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               type="number"
               className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
               {...register("dailyPass.servicePriceId")}
-              value={dailyPassPrice ?? ""}
+              value={servicePrice ?? ""}
               readOnly
             />
             {errors.monto && (
@@ -281,9 +281,9 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
         )}
 
         <div className="col-span-2 flex justify-end space-x-4">
-          <CustomButton onClick={handleCancel} variant="secondary" color="red">
+          {/* <CustomButton onClick={handleCancel} variant="secondary" color="red">
             Cancelar
-          </CustomButton>
+          </CustomButton> */}
 
           <CustomButton
             onClick={handleSubmit(handleSubmitReceipt)}

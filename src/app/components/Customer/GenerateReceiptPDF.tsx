@@ -193,7 +193,7 @@ export const MembershipReceiptPDF = ({
         </View>
 
         <Text style={styles.footer}>
-          Si tiene alguna pregunta, contáctenos a example@site.com{"\n"}o
+          Si tiene alguna pregunta, contáctenos a cybergalaxyrd@gmail.com{"\n"}o
           llámenos al +1 (829) 359-2292
         </Text>
       </Page>

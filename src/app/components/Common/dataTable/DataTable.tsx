@@ -23,11 +23,16 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 9,
+      },
+    },
   });
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 rounded-xl shadow-lg">
-      <div className="mb-4">
+      <div className="mb-1">
         <DataTableViewOptions table={table} />
       </div>
       <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">

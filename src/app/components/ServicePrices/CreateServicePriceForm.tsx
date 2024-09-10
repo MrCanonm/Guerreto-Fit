@@ -100,9 +100,9 @@ const CreateServicePriceForm: React.FC<{
         </div>
 
         <div className="col-span-2 flex justify-end space-x-4">
-          <CustomButton onClick={handleCancel} variant="secondary" color="red">
+          {/* <CustomButton onClick={handleCancel} variant="secondary" color="red">
             Cancelar
-          </CustomButton>
+          </CustomButton> */}
 
           <CustomButton onClick={handleSubmit(onSubmit)} variant="primary">
             Enviar

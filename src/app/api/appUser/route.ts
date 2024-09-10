@@ -5,7 +5,6 @@ export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
-// Explicitly define GET method
 export const GET = async (req: NextRequest) => {
   if (req.method !== "GET") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
@@ -24,7 +23,6 @@ export const GET = async (req: NextRequest) => {
   }
 };
 
-// Explicitly define POST method
 export const POST = async (req: NextRequest) => {
   if (req.method !== "POST") {
     return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
@@ -35,7 +33,6 @@ export const POST = async (req: NextRequest) => {
     body;
 
   try {
-    // Removed user role check
     const existingRole = await prisma.role.findFirst({
       where: { name: roleName },
     });
@@ -56,6 +53,10 @@ export const POST = async (req: NextRequest) => {
         roleId: existingRole.id,
       },
     });
+
+    if (accessName === appUser.accessName) {
+      throw new Error("Username existed");
+    }
 
     return NextResponse.json(appUser, { status: 201 });
   } catch (error) {

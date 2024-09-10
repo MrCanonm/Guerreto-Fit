@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useForm, SubmitHandler, useWatch } from "react-hook-form";
 import { Customer, CustomerType, Membership } from "./customerInterfaces";
 import CustomButton from "../Common/CustomButton";
-import { useCustomerService } from "@/services/customer";
+import { useStadisctisService } from "@/services/stadistics";
 
 interface RenewMembershipForm {
   customer: Customer;
@@ -24,17 +24,19 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
   } = useForm<Customer & Membership>({
     defaultValues: {
       ...customer,
-      monthsToPay: 1, // Valor inicial para meses a pagar
+      monthsToPay: 1,
     },
   });
-  const { getServicePrice } = useCustomerService();
+  const { getActualServicePrice, servicePriceData } = useStadisctisService();
 
   const monthsToPay = useWatch({ control, name: "monthsToPay" });
-  const membershipPrice = customer.membership?.servicePrice.monto || 0;
 
   const [totalAmount, setTotalAmount] = useState<number>(0);
+  //const [membershipPrice, setMembershipPrice] = useState<number>(0);
+  const membershipPrice = servicePriceData?.membershipPrice?.monto || 0;
 
   useEffect(() => {
+    getActualServicePrice();
     if (customer.customerType === CustomerType.MEMBRESIA && monthsToPay) {
       setTotalAmount(Number(monthsToPay) * Number(membershipPrice));
     }
@@ -155,9 +157,9 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
         </div>
 
         <div className="col-span-2 flex justify-end space-x-4">
-          <CustomButton onClick={handleCancel} variant="secondary" color="red">
+          {/* <CustomButton onClick={handleCancel} variant="secondary" color="red">
             Cancelar
-          </CustomButton>
+          </CustomButton> */}
 
           <CustomButton onClick={handleSubmit(onSubmit)} variant="primary">
             Renovar

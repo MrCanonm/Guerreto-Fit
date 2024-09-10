@@ -2,7 +2,6 @@
 import { useStadisctisService } from "@/services/stadistics";
 import { useEffect, useState } from "react";
 import StatCard from "@/app/components/Common/stadisticsCards/StatCard";
-import { useAuth } from "@/hooks/useAuth";
 
 const HomeDasboard = () => {
   const {
@@ -17,7 +16,6 @@ const HomeDasboard = () => {
   } = useStadisctisService();
 
   const [protectedDataError, setProtectedDataError] = useState(null);
-  useAuth();
 
   useEffect(() => {
     getAllStadistics();

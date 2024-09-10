@@ -1,23 +1,33 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { getUserRole } from "@/services/role";
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
     const token = Cookies.get("authToken"); // Obtén el token de las cookies
-    console.log(Cookies.get("authToken"));
+
     if (!token) {
       router.push("/login");
     } else {
       setIsAuthenticated(true);
+      // Aquí debes obtener el rol del usuario
+      getUserRole()
+        .then((name: string) => {
+          setUserRole(name);
+          console.log("User role:", name);
+          setIsLoading(false); // Autenticación verificada (o no) y cargando finalizado
+        })
+        .catch(() => {
+          router.push("/login");
+        });
     }
-
-    setIsLoading(false); // Autenticación verificada (o no) y cargando finalizado
   }, [router]);
 
-  return { isLoading, isAuthenticated };
+  return { isLoading, isAuthenticated, userRole };
 }

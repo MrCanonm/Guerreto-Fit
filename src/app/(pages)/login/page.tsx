@@ -3,6 +3,8 @@
 import { useAuthService } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import Image from "next/image";
+import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
   const [accessName, setAccessName] = useState("");
@@ -10,6 +12,7 @@ const Home = () => {
   const [error, setError] = useState("");
   const { login, loading } = useAuthService();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -27,8 +30,26 @@ const Home = () => {
 
   return (
     <div className="h-screen flex">
-      <div className="flex w-1/2 bg-gradient-to-tr from-orange-900 to-blue-900 justify-around items-center">
-        {/* Left side content remains the same */}
+      <div className="flex w-1/2 bg-gradient-to-tr from-orange-800 to-blue-700 justify-around items-center">
+        <div className="flex flex-col items-center justify-center h-full">
+          <h1 className="text-white font-bold text-4xl font-sans text-center">
+            Guerrero Fit
+          </h1>
+          <p className="text-white mt-1 text-center">El Gym de todos!</p>
+          <Image
+            src="/images/guerrero_fit-rbg.png"
+            alt="Logo de Guerrero Fit"
+            width={150} // Ajusta el tamaño según necesites
+            height={150} // Ajusta el tamaño según necesites
+            className="mt-4"
+          />
+          {/* <button
+    type="button"
+    className="block w-28 bg-white text-indigo-800 mt-4 py-2 rounded-2xl font-bold mb-2"
+  >
+    Read More
+  </button> */}
+        </div>
       </div>
       <div className="flex w-1/2 justify-center items-center bg-white">
         <form className="bg-white" onSubmit={handleSubmit}>
@@ -60,7 +81,7 @@ const Home = () => {
               onChange={(e) => setAccessName(e.target.value)}
             />
           </div>
-          <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
+          <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
             <svg
               className="h-5 w-5 text-gray-400"
               viewBox="0 0 20 20"

@@ -11,6 +11,8 @@ import {
 import StatusBadge from "@/app/components/Common/dataTable/StatusBadge";
 import Modal from "@/app/components/Common/Modal";
 import { useNotification } from "@/app/components/Common/Notification";
+import ScrollableComponent from "@/app/components/Common/ScrollDown";
+import ScrollDownButton from "@/app/components/Common/ScrollDown";
 import SearchBar from "@/app/components/Common/SearchBar";
 import {
   Customer,
@@ -25,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useCustomerService } from "@/services/customer";
 import { ColumnDef } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { FaEllipsisH } from "react-icons/fa";
 
@@ -36,6 +38,8 @@ const MembershipCustomerPage: React.FC = () => {
     canceledMembership,
     updateMembership,
   } = useCustomerService();
+
+  const sectionToScroll = useRef<HTMLDivElement>(null);
 
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [renewModalIsOpen, setRenewModalIsOpen] = useState(false);
@@ -171,12 +175,11 @@ const MembershipCustomerPage: React.FC = () => {
         const email = membership?.email || "N/A";
 
         return (
-          <div>
-            <span className="block font-bold text-gray-500">
-              {" "}
+          <div className="flex flex-col text-gray-700">
+            <span className="font-bold text-gray-900">
               {name + " " + sureName}
             </span>
-            <span className="block text-sm text-gray-500">{email}</span>
+            <span className="text-sm text-gray-500">{email}</span>
           </div>
         );
       },
@@ -213,7 +216,7 @@ const MembershipCustomerPage: React.FC = () => {
       cell: ({ row }) => {
         const membership = row.original.membership;
         return membership ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col text-gray-700">
             <span>
               <strong>Inicio:</strong>{" "}
               {new Date(membership.startDate).toLocaleString("en-US", {
@@ -232,7 +235,7 @@ const MembershipCustomerPage: React.FC = () => {
             </span>
           </div>
         ) : (
-          "N/A"
+          <span className="text-gray-500">N/A</span>
         );
       },
     },
@@ -274,7 +277,7 @@ const MembershipCustomerPage: React.FC = () => {
 
   return (
     <div>
-      <div className="w-full flex justify-between items-center p-4">
+      <div className="w-full flex justify-between items-center p-1">
         <h1 className="text-2xl font-bold text-blue-900">Membresias</h1>
       </div>
 

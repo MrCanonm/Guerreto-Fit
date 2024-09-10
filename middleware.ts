@@ -4,7 +4,7 @@ import { verifyToken } from "@/app/components/utils/generate-jwt";
 export function middleware(req: NextRequest) {
   // Obtener la cookie 'authToken'
   const tokenCookie = req.cookies.get("authToken");
-
+  console.log("Token cookie", tokenCookie);
   // Si no existe la cookie
   if (!tokenCookie) {
     return NextResponse.redirect(new URL("/login", req.url));
@@ -22,5 +22,11 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/home", "/customer", "/api/stadistics", "/api/customer/:path*"], // Rutas a proteger
+  matcher: [
+    "/home",
+    "/customer",
+    "/api/stadistics",
+    "/api/role",
+    "/api/customer/:path*",
+  ], // Rutas a proteger
 };
