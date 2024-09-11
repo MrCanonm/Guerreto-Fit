@@ -12,6 +12,7 @@ import {
 import "./globals.css";
 import { Toaster } from "sonner";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems: NavItem[] = [
   { name: "Home", path: "/home", icon: <FaHome /> },
@@ -43,6 +44,7 @@ const navItems: NavItem[] = [
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  useAuth();
 
   return (
     <html lang="en">
