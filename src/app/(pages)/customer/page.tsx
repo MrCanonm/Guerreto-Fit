@@ -99,12 +99,12 @@ const CustomerPage: React.FC = () => {
         if (customerType === CustomerType.MEMBRESIA) {
           const membership = row.original.membership;
           return membership
-            ? formatter.format(membership.servicePrice.monto)
+            ? formatter.format(membership.servicePrice.ammout)
             : "N/A";
         } else if (customerType === CustomerType.PASE_DIARIO) {
           const dailyPass = row.original.dailyPass;
           return dailyPass
-            ? formatter.format(dailyPass.servicePrice.monto)
+            ? formatter.format(dailyPass.servicePrice.ammout)
             : "N/A";
         } else {
           return "N/A";

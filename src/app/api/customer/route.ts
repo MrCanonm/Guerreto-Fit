@@ -33,54 +33,105 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { accessName, password } = body;
-
   try {
-    const appUser = await prisma.appUser.findFirst({
-      where: { accessName },
-      include: { role: true },
+    const body = await request.json();
+    const { name, sureName, customerType, dailyPass, membership } = body;
+
+    console.log("Received payload:", body);
+
+    const result = await prisma.$transaction(async (prisma) => {
+      const newCustomer = await prisma.customer.create({
+        data: {
+          name,
+          sureName,
+          customerType,
+        },
+      });
+      if (customerType === CustomerType.PASE_DIARIO && dailyPass) {
+        console.log("Received payload:", body);
+        const servicePrice = await prisma.servicePrices.findFirst({
+          where: { service: { serviceName: "PASEDIARIO" } },
+        });
+
+        if (!servicePrice) {
+          throw new Error(
+            "No se encontró un precio de servicio para 'Pase Diario'."
+          );
+        }
+
+        const currentDate = new Date();
+
+        const createdDailyPass = await prisma.dailyPass.create({
+          data: {
+            servicePriceId: servicePrice.id, // Usa el ID del servicePrice, no el monto
+            accessDate: currentDate,
+            customerId: newCustomer.id,
+          },
+        });
+
+        console.log("Created DailyPass:", createdDailyPass);
+      } else if (customerType === CustomerType.MEMBRESIA && membership) {
+        const existingMembership = await prisma.membership.findFirst({
+          where: {
+            OR: [
+              { dni: membership.dni, status: MembershipStatus.ACTIVO },
+              { email: membership.email, status: MembershipStatus.ACTIVO },
+            ],
+          },
+        });
+
+        if (existingMembership) {
+          throw new Error(
+            "Ya existe una membresía activa con el mismo DNI o Correo."
+          );
+        }
+
+        const servicePrice = await prisma.servicePrices.findFirst({
+          where: {
+            service: { serviceName: "MEMBRESIA" },
+            date: { lt: new Date() },
+          },
+          orderBy: { date: "desc" },
+        });
+
+        if (!servicePrice) {
+          throw new Error(
+            "No se encontró un precio de servicio para 'Membresía'."
+          );
+        }
+
+        const startDate = new Date(membership.startDate);
+        const endDate = new Date(startDate);
+        const daysToAdd = membership.monthsToPay * 30;
+        endDate.setDate(startDate.getDate() + daysToAdd);
+
+        const totalAmount =
+          Number(membership.monthsToPay) * Number(servicePrice.ammout);
+
+        const createdMembership = await prisma.membership.create({
+          data: {
+            email: membership.email,
+            phone: membership.phone,
+            dni: membership.dni,
+            servicePriceId: servicePrice.id,
+            monthsToPay: membership.monthsToPay,
+            totalAmout: totalAmount,
+            startDate: startDate,
+            endDate: endDate,
+            customerId: newCustomer.id,
+          },
+        });
+
+        console.log("Created Membership:", createdMembership);
+        return { ...newCustomer, membership: createdMembership };
+      }
     });
 
-    if (!appUser) {
-      return NextResponse.json(
-        { error: "Usuario y/o contraseña incorrectos" },
-        { status: 401 }
-      );
-    }
-
-    const validPassword = await compare(password, appUser.accessHash);
-    if (!validPassword) {
-      return NextResponse.json(
-        { error: "Usuario y/o contraseña incorrectos" },
-        { status: 401 }
-      );
-    }
-
-    const token = generateToken({
-      userId: appUser.id,
-      accessName: appUser.accessName,
-      role: appUser.role.name,
-    });
-
-    const response = NextResponse.json(
-      { message: "Inicio de sesión exitoso" },
-      { status: 200 }
-    );
-
-    // Establecer la cookie
-    response.cookies.set("authToken", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Solo en HTTPS en producción
-      path: "/",
-      maxAge: 60 * 60 * 24, // 24 horas
-    });
-
-    return response;
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
-    console.error("Error authenticating:", error);
+    console.error("Error creating customer:", error);
     return NextResponse.json(
-      { error: "Error en la autenticación" },
+      { error: "Error creating customer" },
       { status: 500 }
     );
   }

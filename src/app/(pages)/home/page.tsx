@@ -63,12 +63,12 @@ const HomeDasboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         <StatCard
           title="Membresías"
-          value={`RD$${servicePriceData?.membershipPrice?.monto || 0}`}
+          value={`RD$${servicePriceData?.membershipPrice?.ammout || 0}`}
           color="orange"
         />
         <StatCard
           title="Pagos Diarios"
-          value={`RD$${servicePriceData?.dailypassPrice?.monto || 0}`}
+          value={`RD$${servicePriceData?.dailypassPrice?.ammout || 0}`}
           color="orange"
         />
       </div>

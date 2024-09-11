@@ -13,8 +13,8 @@ export async function GET(request: Request, { params }: Params) {
 
   try {
     const servicePrice = await prisma.servicePrices.findFirst({
-      where: { service: { serviceName: name }, fecha: { lte: today } },
-      orderBy: { fecha: "desc" },
+      where: { service: { serviceName: name }, date: { lte: today } },
+      orderBy: { date: "desc" },
     });
 
     if (!servicePrice) {

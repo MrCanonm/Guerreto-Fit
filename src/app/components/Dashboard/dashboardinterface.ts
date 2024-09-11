@@ -9,6 +9,6 @@ export interface StatisticsData {
 }
 
 export interface ServicePriceData {
-  membershipPrice: { monto: number };
-  dailypassPrice: { monto: number };
+  membershipPrice: { ammout: number };
+  dailypassPrice: { ammout: number };
 }

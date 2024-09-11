@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "service_prices" ALTER COLUMN "ammout" SET DEFAULT 0,
+ALTER COLUMN "date" SET DEFAULT CURRENT_TIMESTAMP;

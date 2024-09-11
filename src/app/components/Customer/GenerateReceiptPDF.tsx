@@ -173,7 +173,7 @@ export const MembershipReceiptPDF = ({
               Pago de {customerData.customerType}
             </Text>
             <Text style={styles.summaryValue}>
-              RD${customerData.membership?.servicePrice.monto}
+              RD${customerData.membership?.servicePrice.ammout}
             </Text>
           </View>
           <View style={styles.summaryRow}>

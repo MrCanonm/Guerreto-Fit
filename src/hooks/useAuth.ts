@@ -20,7 +20,6 @@ export function useAuth() {
       getUserRole()
         .then((name: string) => {
           setUserRole(name);
-          console.log("User role:", name);
           setIsLoading(false); // Autenticación verificada (o no) y cargando finalizado
         })
         .catch(() => {

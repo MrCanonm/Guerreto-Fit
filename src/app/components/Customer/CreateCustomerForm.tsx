@@ -33,7 +33,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
   const monthsToPay = useWatch({ control, name: "membership.monthsToPay" });
   const membershipPrice = useWatch({
     control,
-    name: "membership.servicePrice.monto",
+    name: "membership.servicePrice.ammout",
   });
 
   const [totalAmount, setTotalAmount] = useState<number>(0);
@@ -70,17 +70,17 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
     if (type === CustomerType.PASE_DIARIO) {
       try {
         const priceData = await getServicePrice("PASEDIARIO");
-        setServicePrice(priceData.monto);
+        setServicePrice(priceData.ammout);
       } catch (error) {
         console.error("Error fetching daily pass price", error);
       }
     } else if (type === CustomerType.MEMBRESIA) {
       const priceData = await getServicePrice("MEMBRESIA");
-      setServicePrice(priceData.monto);
-      setValue("membership.servicePrice.monto", priceData.monto);
+      setServicePrice(priceData.ammout);
+      setValue("membership.servicePrice.ammout", priceData.ammout);
     } else {
       setServicePrice(null);
-      setValue("membership.servicePrice.monto", 0);
+      setValue("membership.servicePrice.ammout", 0);
     }
   };
 
@@ -244,8 +244,8 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
                 value={servicePrice ?? ""}
                 readOnly
               />
-              {errors.monto && (
-                <span className="text-red-600">{errors.monto.message}</span>
+              {errors.ammout && (
+                <span className="text-red-600">{errors.ammout.message}</span>
               )}
             </div>
 
@@ -257,8 +257,8 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
                 value={totalAmount}
                 readOnly
               />
-              {errors.monto && (
-                <span className="text-red-600">{errors.monto.message}</span>
+              {errors.ammout && (
+                <span className="text-red-600">{errors.ammout.message}</span>
               )}
             </div>
           </>
@@ -274,8 +274,8 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               value={servicePrice ?? ""}
               readOnly
             />
-            {errors.monto && (
-              <span className="text-red-600">{errors.monto.message}</span>
+            {errors.ammout && (
+              <span className="text-red-600">{errors.ammout.message}</span>
             )}
           </div>
         )}

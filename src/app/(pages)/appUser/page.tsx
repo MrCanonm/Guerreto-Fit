@@ -6,21 +6,17 @@ import CustomButton from "@/app/components/Common/CustomButton";
 import { SubmitHandler } from "react-hook-form";
 import { DataTable } from "@/app/components/Common/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
-
-import { usePriceService } from "@/services/serviceprice";
-import { ServicePrice } from "@/app/components/ServicePrices/servicepriceinterface";
 import { useNotification } from "@/app/components/Common/Notification";
-import { formatter } from "@/app/components/utils/fomartValue";
 import Modal from "@/app/components/Common/Modal";
-import CreateServicePriceForm from "@/app/components/ServicePrices/CreateServicePriceForm";
 import { useAuth } from "@/hooks/useAuth";
+import { useAppUserService } from "@/services/appUser";
+import { AppUser } from "@/app/components/AppUser/app-user-intertace";
+import { formatPhoneNumber } from "@/app/components/utils/formatCellNumber";
+import CreateAppUserForm from "@/app/components/AppUser/CreateAppUserForm";
+import StatusBadge from "@/app/components/Common/dataTable/StatusBadge";
 
-const ServicePricePage: React.FC = () => {
-  const {
-    data: servicePrice,
-    getAllServicePrices,
-    createServicePrice,
-  } = usePriceService();
+const AppUserPage: React.FC = () => {
+  const { createAppUser, getAllAppUser, data: appUser } = useAppUserService();
 
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
   const { userRole } = useAuth();
@@ -28,27 +24,26 @@ const ServicePricePage: React.FC = () => {
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
 
   useEffect(() => {
-    getAllServicePrices();
-    console.log(userRole);
+    getAllAppUser();
   }, []);
 
   const handleModalClose = () => {
     setCreateModalIsOpen(false);
   };
 
-  const onSubmit: SubmitHandler<ServicePrice> = async (formData) => {
+  const onSubmit: SubmitHandler<AppUser> = async (formData) => {
     try {
       showLoading("Procesando", { id: "loading" });
 
       if (createModalIsOpen) {
-        await createServicePrice(formData);
+        await createAppUser(formData);
         showSuccess("Operación exitosa!", {
           description: `Se ha guardado el nuevo precio para el servicio`,
         });
         setCreateModalIsOpen(false);
       }
 
-      getAllServicePrices();
+      getAllAppUser();
       dismiss("loading");
     } catch (error) {
       console.error("Failed to submit form:", error);
@@ -61,60 +56,77 @@ const ServicePricePage: React.FC = () => {
     }
   };
 
-  const columns: ColumnDef<ServicePrice>[] = [
-    { accessorKey: "service.serviceName", header: "Nombre del Servicio" },
+  const columns: ColumnDef<AppUser>[] = [
     {
-      accessorKey: "Precio",
-      header: "Precio",
+      accessorKey: "appUser",
+      header: "Usuarios",
       cell: ({ row }) => {
-        const servicePrice = row.original;
-        return servicePrice ? formatter.format(servicePrice.ammout) : "N/A";
-      },
-    },
+        const appUser = row.original;
+        const name = row.original.person.name || "N/A";
+        const sureName = row.original.person.sureName || "N/A";
+        const email = appUser?.person.email || "N/A";
 
-    {
-      accessorKey: "fecha",
-      header: "Fecha de Actualización",
-      cell: ({ row }) => {
-        const servicePrice = row.original;
-        return servicePrice ? (
-          <div className="flex flex-col">
-            {new Date(servicePrice.date).toLocaleString("en-US", {
-              month: "numeric",
-              day: "numeric",
-              year: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            })}
+        return (
+          <div className="flex flex-col text-gray-700">
+            <span className="font-bold text-gray-900">
+              {name + " " + sureName}
+            </span>
+            <span className="text-sm text-gray-500">{email}</span>
           </div>
-        ) : (
-          "N/A"
         );
       },
     },
+    {
+      accessorKey: "Edad",
+      header: "Edad",
+      cell: ({ row }) => {
+        const appUser = row.original;
+        return appUser ? appUser.person.age + " años" : "N/A";
+      },
+    },
+    {
+      accessorKey: "Telefono",
+      header: "Telefono",
+      cell: ({ row }) => {
+        const appUser = row.original;
+        return appUser ? formatPhoneNumber(appUser?.person?.phone) : "N/A";
+      },
+    },
+    { accessorKey: "role.name", header: "Rol" },
+    { accessorKey: "accessName", header: "Nombre de Acceso" },
+    {
+      accessorKey: "Estado",
+      header: "Estado",
+      cell: ({ row }) => {
+        const appUser = row.original;
+        const status = appUser ? appUser.status : null;
+        return <StatusBadge status={status} />;
+      },
+    },
   ];
+
   if (userRole === "Owner") {
     return (
       <div>
         <div className="w-full flex justify-between items-center p-4">
           <h1 className="text-2xl font-bold text-blue-900">
-            Historial de Precios de Servicios
+            Gestion de Usuarios
           </h1>
 
           <CustomButton
             variant="primary"
             onClick={() => setCreateModalIsOpen(true)}
           >
-            Actualizar Precio
+            Agregar Usuario
           </CustomButton>
         </div>
 
         <hr className="my-4" />
 
-        <DataTable columns={columns} data={servicePrice || []} />
+        <DataTable columns={columns} data={appUser || []} />
 
         <Modal isOpen={createModalIsOpen} onClose={handleModalClose}>
-          <CreateServicePriceForm onSubmit={onSubmit} />
+          <CreateAppUserForm onSubmit={onSubmit} />
         </Modal>
       </div>
     );
@@ -134,4 +146,4 @@ const ServicePricePage: React.FC = () => {
   }
 };
 
-export default ServicePricePage;
+export default AppUserPage;

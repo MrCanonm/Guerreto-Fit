@@ -33,7 +33,7 @@ const RenewMembershipForm: React.FC<RenewMembershipForm> = ({
 
   const [totalAmount, setTotalAmount] = useState<number>(0);
   //const [membershipPrice, setMembershipPrice] = useState<number>(0);
-  const membershipPrice = servicePriceData?.membershipPrice?.monto || 0;
+  const membershipPrice = servicePriceData?.membershipPrice?.ammout || 0;
 
   useEffect(() => {
     getActualServicePrice();

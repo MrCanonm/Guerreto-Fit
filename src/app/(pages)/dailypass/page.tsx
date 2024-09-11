@@ -33,7 +33,7 @@ const DailyPassCustomerPage: React.FC = () => {
       cell: ({ row }) => {
         const dailyPass = row.original.dailyPass;
         return dailyPass
-          ? formatter.format(dailyPass.servicePrice.monto)
+          ? formatter.format(dailyPass.servicePrice.ammout)
           : "N/A";
       },
     },

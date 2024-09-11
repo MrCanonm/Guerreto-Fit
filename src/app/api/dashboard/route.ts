@@ -32,16 +32,16 @@ export const GET = async (req: NextRequest) => {
     const totalActiveMemberships = activeMemberships.length;
 
     const totalDailyPassAmountToday = todayDailyPass.reduce(
-      (acc, dailyPass) => acc + (dailyPass.servicePrice?.monto || 0),
+      (acc, dailyPass) => acc + (dailyPass.servicePrice?.ammout || 0),
       0
     );
     const totalDailyPassAmount = totalDailyPass.reduce(
-      (acc, dailyPass) => acc + (dailyPass.servicePrice?.monto || 0),
+      (acc, dailyPass) => acc + (dailyPass.servicePrice?.ammout || 0),
       0
     );
 
     const totalMembershipAmount = activeMemberships.reduce(
-      (acc, membership) => acc + (membership.servicePrice?.monto || 0),
+      (acc, membership) => acc + (membership.servicePrice?.ammout || 0),
       0
     );
 

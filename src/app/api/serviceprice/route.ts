@@ -12,18 +12,18 @@ export async function GET() {
       include: { service: true },
       where: {
         service: { serviceName: "MEMBRESIA" },
-        fecha: { lte: today },
+        date: { lte: today },
       },
-      orderBy: { fecha: "desc" },
+      orderBy: { date: "desc" },
     });
 
     const dailypassPrice = await prisma.servicePrices.findFirst({
       include: { service: true },
       where: {
         service: { serviceName: "PASEDIARIO" },
-        fecha: { lte: today },
+        date: { lte: today },
       },
-      orderBy: { fecha: "desc" },
+      orderBy: { date: "desc" },
     });
 
     const response = {
@@ -44,7 +44,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { serviceId, monto } = body;
+    const { serviceId, ammout } = body;
 
     const existingService = await prisma.services.findFirst({
       where: { id: serviceId },
@@ -57,8 +57,7 @@ export async function POST(request: Request) {
     const servicePrice = await prisma.servicePrices.create({
       data: {
         serviceId: existingService.id,
-        monto: parseFloat(monto),
-        fecha: new Date(),
+        ammout: parseFloat(ammout),
       },
     });
 

@@ -24,41 +24,52 @@ export const GET = async (req: NextRequest) => {
 };
 
 export const POST = async (req: NextRequest) => {
-  if (req.method !== "POST") {
-    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-  }
-
   const body = await req.json();
-  const { name, sureName, age, email, phone, accessName, password, roleName } =
-    body;
+  const { accessName, accessHash, person, role } = body;
 
   try {
     const existingRole = await prisma.role.findFirst({
-      where: { name: roleName },
+      where: { name: role.name },
     });
     if (!existingRole) {
       throw new Error("No se encontró el rol.");
     }
 
-    const person = await prisma.person.create({
-      data: { name, sureName, age, email, phone },
+    const result = await prisma.$transaction(async (prisma) => {
+      const existingPerson = await prisma.person.create({
+        data: {
+          name: person.name,
+          sureName: person.sureName,
+          age: parseInt(person.age, 10),
+          email: person.email,
+          phone: person.phone,
+        },
+      });
+      console.log("Person created:", existingPerson);
+
+      const hashedPassword = await hash(accessHash, 10);
+
+      const existingAppUser = await prisma.appUser.findFirst({
+        where: { accessName },
+      });
+      if (existingAppUser) {
+        throw new Error("Username existed");
+      }
+      const appUser = await prisma.appUser.create({
+        data: {
+          accessName,
+          accessHash: hashedPassword,
+          personId: existingPerson.id,
+          roleId: existingRole.id,
+        },
+      });
+
+      console.log("AppUser created:", appUser);
+
+      return appUser;
     });
 
-    const hashedPassword = await hash(password, 10);
-    const appUser = await prisma.appUser.create({
-      data: {
-        accessName,
-        accessHash: hashedPassword,
-        personId: person.id,
-        roleId: existingRole.id,
-      },
-    });
-
-    if (accessName === appUser.accessName) {
-      throw new Error("Username existed");
-    }
-
-    return NextResponse.json(appUser, { status: 201 });
+    return NextResponse.json(result, { status: 201 });
   } catch (error) {
     console.error("Error creating app user:", error);
     return NextResponse.json(

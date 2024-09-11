@@ -9,7 +9,7 @@ export async function getUserRole() {
       throw new Error("No token found");
     }
 
-    const response = await fetch("/api/role", {
+    const response = await fetch("/api/role/roleByToken", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

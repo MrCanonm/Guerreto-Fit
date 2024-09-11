@@ -44,8 +44,8 @@ export type DailyPass = {
 export type ServicePrice = {
   id: number;
   serviceId: number;
-  monto: number;
-  fecha: Date;
+  ammout: number;
+  date: Date;
   services: Service;
 };
 

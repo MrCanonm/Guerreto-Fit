@@ -12,7 +12,6 @@ import {
 import "./globals.css";
 import { Toaster } from "sonner";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
 
 const navItems: NavItem[] = [
   { name: "Home", path: "/home", icon: <FaHome /> },
@@ -39,10 +38,10 @@ const navItems: NavItem[] = [
     ],
   },
   { name: "Gestion de Precios", path: "/serviceprice", icon: <FaHome /> },
+  { name: "Gestion de Usuarios", path: "/appUser", icon: <FaHome /> },
 ];
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
-  const { userRole } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -58,7 +57,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         {pathname !== "/login" && pathname !== "/" && (
           <div className="flex flex-col  scrollbar-thin scrollbar-webkit">
             <div className="flex flex-1 overflow-hidden">
-              <Sidebar navItems={navItems} userRole={userRole || ""} />
+              <Sidebar navItems={navItems} />
               <div className="flex-1  min-h-[80vh] bg-white border border-gray-100 shadow-custom rounded-md p-4 ml-4">
                 <div className="">{children}</div>
               </div>

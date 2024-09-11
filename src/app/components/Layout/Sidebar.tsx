@@ -18,10 +18,9 @@ export interface NavItem {
 
 interface SidebarProps {
   navItems: NavItem[];
-  userRole: string | null;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ navItems, userRole }) => {
+const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -46,58 +45,50 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems, userRole }) => {
   };
 
   const renderNavItems = (items: NavItem[], level = 0) => {
-    return items
-      .filter((item) => {
-        // Filtrar los elementos según el rol del usuario
-        if (item.name === "Gestion de Precios" && userRole !== "Owner") {
-          return false; // No mostrar el item si el usuario no es un Owner
-        }
-        return true; // Mostrar el item para otros roles
-      })
-      .map((item, index) => {
-        const isActive = pathname === item.path;
-        const hasChildren = !!item.children;
+    return items.map((item, index) => {
+      const isActive = pathname === item.path;
+      const hasChildren = !!item.children;
 
-        return (
-          <React.Fragment key={index}>
-            <li
-              className={`p-2 mx-2 cursor-pointer ${
-                level > 0 ? "pl-" + (level * 4 + 2) : ""
-              } relative`}
-              onClick={() => handleItemClick(index, hasChildren)}
-            >
-              <Link href={item.path}>
-                <div
-                  className={`flex items-center ${
-                    !isExpanded ? "justify-center" : ""
-                  } text-left space-x-2 py-2 px-2 rounded-md ${
-                    isActive
-                      ? "bg-blue-900 text-white sidebar-arrow"
-                      : "text-white hover:bg-blue-100 hover:text-orange-600"
-                  }`}
-                >
-                  {item.icon}
-                  {isExpanded && <span>{item.name}</span>}
-                </div>
-              </Link>
-              {hasChildren && isExpanded && (
-                <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                  {openIndex === index ? <FaChevronDown /> : <FaChevronRight />}
-                </span>
-              )}
-            </li>
-            {hasChildren && openIndex === index && (
-              <ul
-                className={`${
-                  isExpanded ? "pl-4" : "pl-0"
-                } transition-all duration-300`}
+      return (
+        <React.Fragment key={index}>
+          <li
+            className={`p-2 mx-2 cursor-pointer ${
+              level > 0 ? "pl-" + (level * 4 + 2) : ""
+            } relative`}
+            onClick={() => handleItemClick(index, hasChildren)}
+          >
+            <Link href={item.path}>
+              <div
+                className={`flex items-center ${
+                  !isExpanded ? "justify-center" : ""
+                } text-left space-x-2 py-2 px-2 rounded-md ${
+                  isActive
+                    ? "bg-blue-900 text-white sidebar-arrow"
+                    : "text-white hover:bg-blue-100 hover:text-orange-600"
+                }`}
               >
-                {renderNavItems(item.children || [], level + 1)}
-              </ul>
+                {item.icon}
+                {isExpanded && <span>{item.name}</span>}
+              </div>
+            </Link>
+            {hasChildren && isExpanded && (
+              <span className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                {openIndex === index ? <FaChevronDown /> : <FaChevronRight />}
+              </span>
             )}
-          </React.Fragment>
-        );
-      });
+          </li>
+          {hasChildren && openIndex === index && (
+            <ul
+              className={`${
+                isExpanded ? "pl-4" : "pl-0"
+              } transition-all duration-300`}
+            >
+              {renderNavItems(item.children || [], level + 1)}
+            </ul>
+          )}
+        </React.Fragment>
+      );
+    });
   };
 
   const toggleDropdown = () => {

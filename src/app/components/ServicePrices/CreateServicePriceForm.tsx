@@ -92,10 +92,10 @@ const CreateServicePriceForm: React.FC<{
           <input
             type="number"
             className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-            {...register("monto")}
+            {...register("ammout")}
           />
-          {errors.monto && (
-            <span className="text-red-600">{errors.monto.message}</span>
+          {errors.ammout && (
+            <span className="text-red-600">{errors.ammout.message}</span>
           )}
         </div>
 
