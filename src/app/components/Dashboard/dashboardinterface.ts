@@ -5,7 +5,7 @@ export interface StatisticsData {
   totalMembershipAmount: number;
   totalDailyPassAmountToday: number;
   totalDailyPassAmount: number;
-  totalAmmout: number;
+  totalAmount: number;
 }
 
 export interface ServicePriceData {

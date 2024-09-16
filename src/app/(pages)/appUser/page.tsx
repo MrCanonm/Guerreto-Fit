@@ -14,6 +14,15 @@ import { AppUser } from "@/app/components/AppUser/app-user-intertace";
 import { formatPhoneNumber } from "@/app/components/utils/formatCellNumber";
 import CreateAppUserForm from "@/app/components/AppUser/CreateAppUserForm";
 import StatusBadge from "@/app/components/Common/dataTable/StatusBadge";
+import AccessDenied from "@/app/components/Common/AccessDenied";
+import {
+  Dropdown,
+  DropdownContainer,
+  DropdownItem,
+  DropdownTrigger,
+} from "@/app/components/Common/dataTable/Dropdown";
+import { Button } from "@/components/ui/button";
+import { FaEllipsisH } from "react-icons/fa";
 
 const AppUserPage: React.FC = () => {
   const { createAppUser, getAllAppUser, data: appUser } = useAppUserService();
@@ -103,6 +112,28 @@ const AppUserPage: React.FC = () => {
         return <StatusBadge status={status} />;
       },
     },
+    {
+      accessorKey: "actions",
+      header: "Acciones",
+      cell: ({ row }) => (
+        <Dropdown>
+          <DropdownTrigger asChild>
+            <Button className="flex w-8 h-8 p-0" variant="ghost">
+              <FaEllipsisH className="w-4 h-4" />
+              <span className="sr-only">Acciones</span>
+            </Button>
+          </DropdownTrigger>
+          <DropdownContainer>
+            <DropdownItem onClick={() => row.original}>
+              Restablecer Contraseña
+            </DropdownItem>
+            <DropdownItem onClick={() => row.original}>
+              Deshabilitar Usuario
+            </DropdownItem>
+          </DropdownContainer>
+        </Dropdown>
+      ),
+    },
   ];
 
   if (userRole === "Owner") {
@@ -130,19 +161,9 @@ const AppUserPage: React.FC = () => {
         </Modal>
       </div>
     );
-  } else {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-center p-8 bg-white shadow-lg rounded-lg">
-          <h1 className="text-4xl font-bold text-red-600 mb-4">
-            Acceso Denegado
-          </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            No tienes permiso para acceder a esta función.
-          </p>
-        </div>
-      </div>
-    );
+  }
+  if (userRole === "Employes") {
+    return <AccessDenied />;
   }
 };
 

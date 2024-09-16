@@ -1,13 +1,34 @@
-import { PrismaClient } from "@prisma/client";
+// pages/api/services/cronJob.ts
 import { MembershipStatus } from "@/app/components/Customer/customerInterfaces";
+import { PrismaClient } from "@prisma/client";
+import cron from "node-cron";
 
 const prisma = new PrismaClient();
+
+let cronJobStarted = false;
+
+export async function POST(request: Request) {
+  const today = new Date();
+  if (!cronJobStarted) {
+    cron.schedule("0 5 * * *", () => {
+      console.log(
+        `running a task everyday at ${today.getHours()}:${today.getMinutes()}`
+      );
+      updateExpiredMemberships();
+    });
+    cronJobStarted = true;
+  }
+
+  return new Response(JSON.stringify({ message: "Cron job started" }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
 async function updateExpiredMemberships() {
   try {
     const today = new Date();
 
-    // Encuentra todas las membresías activas cuyo endDate ha vencido
     const membershipsToUpdate = await prisma.membership.findMany({
       where: {
         status: MembershipStatus.ACTIVO,
@@ -22,7 +43,6 @@ async function updateExpiredMemberships() {
       return;
     }
 
-    // Actualiza el estado de estas membresías a "pendiente"
     await prisma.membership.updateMany({
       where: {
         id: {
@@ -34,7 +54,9 @@ async function updateExpiredMemberships() {
       },
     });
 
-    console.log("Memberships updated to PENDIENTE");
+    console.log(
+      `Memberships updated to PENDIENTE ${membershipsToUpdate.length}`
+    );
   } catch (error) {
     console.error("Error updating expired memberships:", error);
   }

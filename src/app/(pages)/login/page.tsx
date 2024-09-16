@@ -12,7 +12,6 @@ const Home = () => {
   const [error, setError] = useState("");
   const { login, loading } = useAuthService();
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

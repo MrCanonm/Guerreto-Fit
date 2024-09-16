@@ -132,18 +132,6 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
       <div className="relative flex justify-center flex-col items-center mb-6">
         {isDropdownOpen && isExpanded && (
           <div className="absolute bottom-full mb-2 py-2 w-48 bg-white rounded-md shadow-xl z-50 border border-gray-200">
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
-            >
-              Perfil
-            </a>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
-            >
-              Ajustes
-            </a>
             <button
               onClick={handleLogout}
               className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
@@ -163,18 +151,6 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
           />
           {isDropdownOpen && !isExpanded && (
             <div className="absolute bottom-full mb-2 py-2 w-24 bg-white rounded-md shadow-xl z-50 border border-gray-200 transform -translate-x-1/4">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
-              >
-                Perfil
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
-              >
-                Ajustes
-              </a>
               <button
                 onClick={handleLogout}
                 className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"

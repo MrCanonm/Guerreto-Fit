@@ -29,6 +29,10 @@ export const useAuthService = () => {
       // Verificar que la cookie se haya establecido
       console.log("Login successful. Token set in cookie.");
 
+      await fetch("/api/cronJobs", {
+        method: "POST",
+      });
+
       setLoading(false);
       return data;
     } catch (err) {

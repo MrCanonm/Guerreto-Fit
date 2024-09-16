@@ -23,11 +23,6 @@ export function DataTable<TData>({ columns, data }: DataTableProps<TData>) {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 9,
-      },
-    },
   });
 
   return (

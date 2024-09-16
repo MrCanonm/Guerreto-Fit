@@ -11,8 +11,6 @@ import {
 import StatusBadge from "@/app/components/Common/dataTable/StatusBadge";
 import Modal from "@/app/components/Common/Modal";
 import { useNotification } from "@/app/components/Common/Notification";
-import ScrollableComponent from "@/app/components/Common/ScrollDown";
-import ScrollDownButton from "@/app/components/Common/ScrollDown";
 import SearchBar from "@/app/components/Common/SearchBar";
 import {
   Customer,
@@ -27,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useCustomerService } from "@/services/customer";
 import { ColumnDef } from "@tanstack/react-table";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 import { FaEllipsisH } from "react-icons/fa";
 
@@ -38,8 +36,6 @@ const MembershipCustomerPage: React.FC = () => {
     canceledMembership,
     updateMembership,
   } = useCustomerService();
-
-  const sectionToScroll = useRef<HTMLDivElement>(null);
 
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [renewModalIsOpen, setRenewModalIsOpen] = useState(false);

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Sidebar, { NavItem } from "./components/Layout/Sidebar";
 import {
   FaCashRegister,
@@ -48,26 +47,26 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <html lang="en">
-      <body>
+      <body className="flex min-h-screen flex-col">
         <Toaster
           richColors
           closeButton
-          position="top-right"
+          position="bottom-right"
           expand={true}
           duration={5000}
         />
-        {pathname !== "/login" && pathname !== "/" && (
-          <div className="flex flex-col  scrollbar-thin scrollbar-webkit">
-            <div className="flex flex-1 overflow-hidden">
-              <Sidebar navItems={navItems} />
-              <div className="flex-1  min-h-[80vh] bg-white border border-gray-100 shadow-custom rounded-md p-4 ml-4">
-                <div className="">{children}</div>
+        {pathname !== "/login" && pathname !== "/" ? (
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar navItems={navItems} />
+            <div className="flex-1 overflow-auto ">
+              <div className="min-h-[96vh] bg-white border border-gray-100 shadow-custom rounded-md p-4 m-4">
+                {children}
               </div>
             </div>
           </div>
+        ) : (
+          <div className="flex-1">{children}</div>
         )}
-        {pathname === "/login" && <div className="">{children}</div>}
-        {pathname === "/" && <div className="">{children}</div>}
       </body>
     </html>
   );

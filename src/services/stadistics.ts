@@ -40,6 +40,11 @@ export const useStadisctisService = () => {
     );
   };
 
+  const getExpiredMemberships = async () => {
+    const result = await fetch(`api/membership/pending`);
+    return result.json();
+  };
+
   return {
     statisticsData,
     servicePriceData,
@@ -49,5 +54,6 @@ export const useStadisctisService = () => {
     priceError,
     getActualServicePrice,
     getAllStadistics,
+    getExpiredMemberships,
   };
 };

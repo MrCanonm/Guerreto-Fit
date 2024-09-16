@@ -14,6 +14,7 @@ import { formatter } from "@/app/components/utils/fomartValue";
 import Modal from "@/app/components/Common/Modal";
 import CreateServicePriceForm from "@/app/components/ServicePrices/CreateServicePriceForm";
 import { useAuth } from "@/hooks/useAuth";
+import AccessDenied from "@/app/components/Common/AccessDenied";
 
 const ServicePricePage: React.FC = () => {
   const {
@@ -118,19 +119,9 @@ const ServicePricePage: React.FC = () => {
         </Modal>
       </div>
     );
-  } else {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-center p-8 bg-white shadow-lg rounded-lg">
-          <h1 className="text-4xl font-bold text-red-600 mb-4">
-            Acceso Denegado
-          </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            No tienes permiso para acceder a esta función.
-          </p>
-        </div>
-      </div>
-    );
+  }
+  if (userRole === "Employes") {
+    return <AccessDenied />;
   }
 };
 
