@@ -58,14 +58,16 @@ const CreateServicePriceForm: React.FC<{
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-8 text-gray-600">Nuevo Pago</h1>
+      <h1 className="text-xl font-bold mb-8 text-gray-600">
+        Actualizar Precio de Servicio
+      </h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="grid grid-cols-2 gap-4"
       >
         <div>
-          <label className="block">Category</label>
+          <label className="block">Servicio</label>
           <Controller
             control={control}
             name="serviceId"
