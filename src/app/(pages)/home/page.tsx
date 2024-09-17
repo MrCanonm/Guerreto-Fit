@@ -144,7 +144,7 @@ const HomeDashboard = () => {
       {renderPendingMemberships()}
       {renderClientStats()}
       {renderTodayPrices()}
-      {userRole === "Owner" || (userRole === "Admin" && renderEarnings())}
+      {(userRole === "Owner" || userRole === "Admin") && renderEarnings()}
     </div>
   );
 };
