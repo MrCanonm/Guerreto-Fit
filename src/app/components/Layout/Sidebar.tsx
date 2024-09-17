@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FaChevronDown, FaChevronRight } from "react-icons/fa";
 import Image from "next/image";
 import { FaCaretDown, FaCaretUp, FaUserCircle } from "react-icons/fa";
 import { useAuthService } from "@/services/auth";
+import { useAppUserService } from "@/services/appUser";
 
 export interface NavItem {
   name: string;
@@ -24,10 +25,24 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [user, setUser] = useState<string>();
   const pathname = usePathname();
   const router = useRouter();
 
   const { logout } = useAuthService();
+  const { actualUser } = useAppUserService();
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchUser = async () => {
+    const userData = await actualUser();
+    const { name, sureName } = userData.data;
+
+    const fullName = `${name} ${sureName}`;
+    setUser(fullName);
+  };
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
@@ -105,8 +120,6 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
     }
   };
 
-  const user = { name: "Guerrero Fit" };
-
   return (
     <aside
       className={`bg-orange-900 text-white min-h-screen flex flex-col justify-between transition-all duration-300 ${
@@ -144,7 +157,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
           onClick={isExpanded ? toggleDropdown : undefined}
           className="flex items-center focus:outline-none"
         >
-          {isExpanded && <span className="text-sm pr-2">{user?.name}</span>}
+          {isExpanded && <span className="text-sm pr-2">{user}</span>}
           <FaUserCircle
             className="h-8 w-8 text-white"
             onClick={!isExpanded ? toggleDropdown : undefined}

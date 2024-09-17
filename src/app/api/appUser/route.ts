@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
+import { AppUserStatus } from "@/app/components/AppUser/app-user-intertace";
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
@@ -13,6 +14,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const appUsers = await prisma.appUser.findMany({
       include: { person: true, role: true },
+      where: { status: AppUserStatus.ACTIVO },
     });
     return NextResponse.json(appUsers, { status: 200 });
   } catch (error) {
@@ -33,6 +35,10 @@ export const POST = async (req: NextRequest) => {
     });
     if (!existingRole) {
       throw new Error("No se encontró el rol.");
+    }
+
+    if (role.name === "Owner") {
+      throw new Error("Ya existe un usuario con el rol Owner");
     }
 
     const result = await prisma.$transaction(async (prisma) => {

@@ -26,9 +26,6 @@ export const useAuthService = () => {
         throw new Error(data.error || "An error occurred during login");
       }
 
-      // Verificar que la cookie se haya establecido
-      console.log("Login successful. Token set in cookie.");
-
       await fetch("/api/cronJobs", {
         method: "POST",
       });

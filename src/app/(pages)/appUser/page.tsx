@@ -23,11 +23,21 @@ import {
 } from "@/app/components/Common/dataTable/Dropdown";
 import { Button } from "@/components/ui/button";
 import { FaEllipsisH } from "react-icons/fa";
+import UpdateAppUserForm from "@/app/components/AppUser/UpdatePasswordForm";
 
 const AppUserPage: React.FC = () => {
-  const { createAppUser, getAllAppUser, data: appUser } = useAppUserService();
+  const {
+    createAppUser,
+    getAllAppUser,
+    updateStatus,
+    updatePassword,
+    data: appUser,
+  } = useAppUserService();
 
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [currentAppUser, setCurrentAppUser] = useState<AppUser | null>(null);
+  const [updateAppUserModalIsOpen, setAppUserModalIsOpen] = useState(false);
+
   const { userRole } = useAuth();
 
   const { showSuccess, showError, showLoading, dismiss } = useNotification();
@@ -37,7 +47,36 @@ const AppUserPage: React.FC = () => {
   }, []);
 
   const handleModalClose = () => {
+    setAppUserModalIsOpen(false);
     setCreateModalIsOpen(false);
+  };
+
+  const handleInhaability = async (appUserId: string) => {
+    try {
+      showLoading("Deshabilitando usuario", { id: "loading" });
+
+      await updateStatus(appUserId);
+
+      showSuccess("Éxito!", {
+        description: `El usuario ha sido deshabilitado.`,
+      });
+
+      // Refrescar los datos
+      getAllAppUser();
+      dismiss("loading");
+    } catch (error) {
+      console.error("Error al deshabilitar el usuario:", error);
+
+      showError("Operación fallida!", {
+        description: `Error al intentar deshabilitar el usuario, intente de nuevo más tarde.`,
+      });
+
+      dismiss("loading");
+    }
+  };
+  const handleUpdatePassword = (appUser: AppUser) => {
+    setCurrentAppUser(appUser);
+    setAppUserModalIsOpen(true);
   };
 
   const onSubmit: SubmitHandler<AppUser> = async (formData) => {
@@ -47,9 +86,17 @@ const AppUserPage: React.FC = () => {
       if (createModalIsOpen) {
         await createAppUser(formData);
         showSuccess("Operación exitosa!", {
-          description: `Se ha guardado el nuevo precio para el servicio`,
+          description: `Se ha creado el nuevo usuario.`,
         });
         setCreateModalIsOpen(false);
+      }
+
+      if (updateAppUserModalIsOpen && currentAppUser) {
+        await updatePassword(currentAppUser.id, formData);
+        showSuccess("Éxito!", {
+          description: `La se ha actializado la contraseña.`,
+        });
+        setAppUserModalIsOpen(false);
       }
 
       getAllAppUser();
@@ -58,7 +105,7 @@ const AppUserPage: React.FC = () => {
       console.error("Failed to submit form:", error);
 
       showError("Operación fallida!", {
-        description: `Error al tratar de registrar el nuevo precio para el servicio, intentalo más tarde`,
+        description: `Error al tratar de registrar el nuevo usuario, intentalo más tarde`,
       });
 
       dismiss("loading");
@@ -124,10 +171,10 @@ const AppUserPage: React.FC = () => {
             </Button>
           </DropdownTrigger>
           <DropdownContainer>
-            <DropdownItem onClick={() => row.original}>
+            <DropdownItem onClick={() => handleUpdatePassword(row.original)}>
               Restablecer Contraseña
             </DropdownItem>
-            <DropdownItem onClick={() => row.original}>
+            <DropdownItem onClick={() => handleInhaability(row.original.id)}>
               Deshabilitar Usuario
             </DropdownItem>
           </DropdownContainer>
@@ -136,35 +183,38 @@ const AppUserPage: React.FC = () => {
     },
   ];
 
-  if (userRole === "Owner") {
-    return (
-      <div>
-        <div className="w-full flex justify-between items-center p-4">
-          <h1 className="text-2xl font-bold text-blue-900">
-            Gestion de Usuarios
-          </h1>
+  return userRole === "Owner" || userRole === "Admin" ? (
+    <div>
+      <div className="w-full flex justify-between items-center p-4">
+        <h1 className="text-2xl font-bold text-blue-900">
+          Gestion de Usuarios
+        </h1>
 
-          <CustomButton
-            variant="primary"
-            onClick={() => setCreateModalIsOpen(true)}
-          >
-            Agregar Usuario
-          </CustomButton>
-        </div>
-
-        <hr className="my-4" />
-
-        <DataTable columns={columns} data={appUser || []} />
-
-        <Modal isOpen={createModalIsOpen} onClose={handleModalClose}>
-          <CreateAppUserForm onSubmit={onSubmit} />
-        </Modal>
+        <CustomButton
+          variant="primary"
+          onClick={() => setCreateModalIsOpen(true)}
+        >
+          Agregar Usuario
+        </CustomButton>
       </div>
-    );
-  }
-  if (userRole === "Employes") {
-    return <AccessDenied />;
-  }
+
+      <hr className="my-4" />
+
+      <DataTable columns={columns} data={appUser || []} />
+
+      <Modal isOpen={createModalIsOpen} onClose={handleModalClose}>
+        <CreateAppUserForm onSubmit={onSubmit} />
+      </Modal>
+
+      <Modal isOpen={updateAppUserModalIsOpen} onClose={handleModalClose}>
+        {currentAppUser && (
+          <UpdateAppUserForm appUser={currentAppUser} onSubmit={onSubmit} />
+        )}
+      </Modal>
+    </div>
+  ) : userRole === "Employes" ? (
+    <AccessDenied />
+  ) : null;
 };
 
 export default AppUserPage;

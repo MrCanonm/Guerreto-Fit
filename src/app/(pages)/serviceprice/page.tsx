@@ -94,35 +94,32 @@ const ServicePricePage: React.FC = () => {
       },
     },
   ];
-  if (userRole === "Owner") {
-    return (
-      <div>
-        <div className="w-full flex justify-between items-center p-4">
-          <h1 className="text-2xl font-bold text-blue-900">
-            Historial de Precios de Servicios
-          </h1>
+  return userRole === "Owner" || userRole === "Admin" ? (
+    <div>
+      <div className="w-full flex justify-between items-center p-4">
+        <h1 className="text-2xl font-bold text-blue-900">
+          Historial de Precios de Servicios
+        </h1>
 
-          <CustomButton
-            variant="primary"
-            onClick={() => setCreateModalIsOpen(true)}
-          >
-            Actualizar Precio
-          </CustomButton>
-        </div>
-
-        <hr className="my-4" />
-
-        <DataTable columns={columns} data={servicePrice || []} />
-
-        <Modal isOpen={createModalIsOpen} onClose={handleModalClose}>
-          <CreateServicePriceForm onSubmit={onSubmit} />
-        </Modal>
+        <CustomButton
+          variant="primary"
+          onClick={() => setCreateModalIsOpen(true)}
+        >
+          Actualizar Precio
+        </CustomButton>
       </div>
-    );
-  }
-  if (userRole === "Employes") {
-    return <AccessDenied />;
-  }
+
+      <hr className="my-4" />
+
+      <DataTable columns={columns} data={servicePrice || []} />
+
+      <Modal isOpen={createModalIsOpen} onClose={handleModalClose}>
+        <CreateServicePriceForm onSubmit={onSubmit} />
+      </Modal>
+    </div>
+  ) : userRole === "Employes" ? (
+    <AccessDenied />
+  ) : null;
 };
 
 export default ServicePricePage;

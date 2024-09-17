@@ -4,7 +4,6 @@ import { useAuthService } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
-import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
   const [accessName, setAccessName] = useState("");
@@ -23,7 +22,7 @@ const Home = () => {
         router.push("/home");
       }
     } catch (err) {
-      setError("Login failed. Please check your credentials.");
+      setError("Usuario y/o contraseña incorrectos");
     }
   };
 
@@ -38,8 +37,8 @@ const Home = () => {
           <Image
             src="/images/guerrero_fit-rbg.png"
             alt="Logo de Guerrero Fit"
-            width={150} // Ajusta el tamaño según necesites
-            height={150} // Ajusta el tamaño según necesites
+            width={150}
+            height={150}
             className="mt-4"
           />
           {/* <button
@@ -53,7 +52,7 @@ const Home = () => {
       <div className="flex w-1/2 justify-center items-center bg-white">
         <form className="bg-white" onSubmit={handleSubmit}>
           <h1 className="text-gray-800 font-bold text-2xl mb-1">
-            Hola de nuevo!
+            Iniciar Sesión
           </h1>
           <p className="text-sm font-normal text-gray-600 mb-7">Bienvenido</p>
           {error && <p className="text-red-500 mb-4">{error}</p>}
@@ -107,9 +106,6 @@ const Home = () => {
           >
             {loading ? "Iniciando sesión..." : "Iniciar sesión"}
           </button>
-          <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
-            Olvidaste tu contraseña ?
-          </span>
         </form>
       </div>
     </div>

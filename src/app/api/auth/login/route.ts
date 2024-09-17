@@ -1,5 +1,5 @@
 import { generateToken } from "@/app/components/utils/generate-jwt";
-import { PrismaClient } from "@prisma/client";
+import { AppUserStatus, PrismaClient } from "@prisma/client";
 import { compare } from "bcrypt";
 import { NextResponse } from "next/server";
 
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
   try {
     const appUser = await prisma.appUser.findFirst({
-      where: { accessName },
+      where: { accessName, status: AppUserStatus.ACTIVO },
       include: { role: true },
     });
 
