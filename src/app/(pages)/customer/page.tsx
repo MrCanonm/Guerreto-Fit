@@ -10,6 +10,7 @@ import {
   CustomerType,
 } from "@/app/components/Customer/customerInterfaces";
 import { formatter } from "@/app/components/utils/fomartValue";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 import { useAuth } from "@/hooks/useAuth";
 import { useCustomerService } from "@/services/customer";
 import { ColumnDef } from "@tanstack/react-table";
@@ -17,7 +18,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler } from "react-hook-form";
 
 const CustomerPage: React.FC = () => {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { isLoading, isAuthenticated, userPermission } = useAuth();
 
   const {
     data: customers,
@@ -131,6 +132,13 @@ const CustomerPage: React.FC = () => {
         <CustomButton
           variant="primary"
           onClick={() => setCreateModalIsOpen(true)}
+          disabled={
+            !userPermission?.some(
+              (perm: any) =>
+                perm.permission.name === PermissionsDict.CREATE_BILLS &&
+                perm.allowed
+            )
+          }
         >
           Agregar Pago
         </CustomButton>

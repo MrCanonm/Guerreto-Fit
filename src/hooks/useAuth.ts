@@ -9,26 +9,46 @@ export function useAuth() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [userPermission, setUserPermission] = useState<string[] | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const token = Cookies.get("authToken"); // Obtén el token de las cookies
-
+  const checkAuth = async () => {
+    const token = Cookies.get("authToken");
     if (!token) {
-      router.push("/login");
-    } else {
-      setIsAuthenticated(true);
-      // Aquí debes obtener el rol del usuario
-      getUserRole()
-        .then((name: string) => {
-          setUserRole(name);
-          setIsLoading(false); // Autenticación verificada (o no) y cargando finalizado
-        })
-        .catch(() => {
-          router.push("/login");
-        });
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setUserPermission(null);
+      setIsLoading(false);
+      return false;
     }
-  }, [router]);
 
-  return { isLoading, isAuthenticated, userRole };
+    try {
+      const user = await getUserRole();
+      setUserRole(user.data.role);
+      setUserPermission(user.data.rolePermissions);
+      setIsAuthenticated(true);
+      return true;
+    } catch (error) {
+      setIsAuthenticated(false);
+      setUserRole(null);
+      setUserPermission(null);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const refreshAuth = async () => {
+    setIsLoading(true);
+    const isAuth = await checkAuth();
+    if (isAuth) {
+      router.push("/home");
+    }
+  };
+
+  return { isLoading, isAuthenticated, userRole, userPermission, refreshAuth };
 }

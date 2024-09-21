@@ -1,3 +1,4 @@
+import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
@@ -46,6 +47,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { serviceId, ammout } = body;
 
+    const { accessName } = getLoggedUser();
+
     const existingService = await prisma.services.findFirst({
       where: { id: serviceId },
     });
@@ -58,6 +61,7 @@ export async function POST(request: Request) {
       data: {
         serviceId: existingService.id,
         ammout: parseFloat(ammout),
+        created_by: accessName,
       },
     });
 

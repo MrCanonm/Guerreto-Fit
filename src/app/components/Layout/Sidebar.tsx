@@ -8,11 +8,13 @@ import Image from "next/image";
 import { FaCaretDown, FaCaretUp, FaUserCircle } from "react-icons/fa";
 import { useAuthService } from "@/services/auth";
 import { useAppUserService } from "@/services/appUser";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 
 export interface NavItem {
   name: string;
   path: string;
   element?: JSX.Element;
+  permissions: PermissionsDict[];
   icon?: JSX.Element;
   children?: NavItem[];
 }
@@ -27,7 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [user, setUser] = useState<string>();
   const pathname = usePathname();
-  const router = useRouter();
 
   const { logout } = useAuthService();
   const { actualUser } = useAppUserService();
@@ -114,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
     const result = await logout();
 
     if (result.success) {
-      router.push("/login");
+      window.location.href = "/login";
     } else {
       alert(result.error);
     }
@@ -144,10 +145,10 @@ const Sidebar: React.FC<SidebarProps> = ({ navItems }) => {
 
       <div className="relative flex justify-center flex-col items-center mb-6">
         {isDropdownOpen && isExpanded && (
-          <div className="absolute bottom-full mb-2 py-2 w-48 bg-white rounded-md shadow-xl z-50 border border-gray-200">
+          <div className="absolute bottom-full py-2 w-48 bg-white rounded-md shadow-xl z-50 border border-gray-200">
             <button
               onClick={handleLogout}
-              className="block px-4 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
+              className="block px-12 py-2 text-sm text-gray-800 hover:bg-blue-500 hover:text-white"
             >
               Cerrar Sesion
             </button>

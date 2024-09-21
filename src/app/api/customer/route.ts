@@ -4,8 +4,7 @@ import {
   CustomerType,
   MembershipStatus,
 } from "@/app/components/Customer/customerInterfaces";
-import { generateToken } from "@/app/components/utils/generate-jwt";
-import { compare } from "bcrypt";
+import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
 const prisma = new PrismaClient();
 export async function GET() {
   try {
@@ -36,6 +35,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { name, sureName, customerType, dailyPass, membership } = body;
+    const { accessName } = getLoggedUser();
 
     console.log("Received payload:", body);
 
@@ -45,6 +45,8 @@ export async function POST(request: Request) {
           name,
           sureName,
           customerType,
+          created_by: accessName,
+          updated_by: accessName,
         },
       });
       if (customerType === CustomerType.PASE_DIARIO && dailyPass) {
@@ -66,6 +68,7 @@ export async function POST(request: Request) {
             servicePriceId: servicePrice.id, // Usa el ID del servicePrice, no el monto
             accessDate: currentDate,
             customerId: newCustomer.id,
+            created_by: accessName,
           },
         });
 
@@ -119,6 +122,8 @@ export async function POST(request: Request) {
             startDate: startDate,
             endDate: endDate,
             customerId: newCustomer.id,
+            created_by: accessName,
+            updated_by: accessName,
           },
         });
 

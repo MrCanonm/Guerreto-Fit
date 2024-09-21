@@ -4,6 +4,8 @@ import { useStadisctisService } from "@/services/stadistics";
 import { useEffect, useState } from "react";
 import StatCard from "@/app/components/Common/stadisticsCards/StatCard";
 import { useAuth } from "@/hooks/useAuth";
+import LoadingSpinner from "@/app/components/Common/Loading";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 
 const HomeDashboard = () => {
   const {
@@ -20,7 +22,7 @@ const HomeDashboard = () => {
 
   const [protectedDataError] = useState(null);
   const [pendingMemberships, setPendingMemberships] = useState([]);
-  const { userRole } = useAuth();
+  const { userRole, userPermission } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +41,7 @@ const HomeDashboard = () => {
     console.log("Expired memberships:", pendingMemberships.length);
   };
 
-  if (statsLoading || priceLoading) return <div>Loading...</div>;
+  if (statsLoading || priceLoading) return <LoadingSpinner />;
 
   if (statsError || priceError || protectedDataError)
     return (
@@ -141,10 +143,23 @@ const HomeDashboard = () => {
 
   return (
     <div className="dashboard">
-      {renderPendingMemberships()}
-      {renderClientStats()}
-      {renderTodayPrices()}
-      {userRole === "Owner" || (userRole === "Admin" && renderEarnings())}
+      {userPermission?.some(
+        (perm: any) =>
+          perm.permission.name === PermissionsDict.VIEW_DASBOARD &&
+          perm.allowed === true
+      ) && (
+        <>
+          {renderPendingMemberships()}
+          {renderClientStats()}
+          {renderTodayPrices()}
+        </>
+      )}
+
+      {userPermission?.some(
+        (perm: any) =>
+          perm.permission.name === PermissionsDict.VIEW_EARNINGS &&
+          perm.allowed === true
+      ) && renderEarnings()}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
 import { AppUserStatus } from "@/app/components/AppUser/app-user-intertace";
+import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
@@ -28,6 +29,7 @@ export const GET = async (req: NextRequest) => {
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const { accessName, accessHash, person, role } = body;
+  const { accessName: loggedUser } = getLoggedUser();
 
   try {
     const existingRole = await prisma.role.findFirst({
@@ -49,6 +51,8 @@ export const POST = async (req: NextRequest) => {
           age: parseInt(person.age, 10),
           email: person.email,
           phone: person.phone,
+          created_by: loggedUser,
+          updated_by: loggedUser,
         },
       });
       console.log("Person created:", existingPerson);
@@ -67,6 +71,8 @@ export const POST = async (req: NextRequest) => {
           accessHash: hashedPassword,
           personId: existingPerson.id,
           roleId: existingRole.id,
+          created_by: loggedUser,
+          updated_by: loggedUser,
         },
       });
 

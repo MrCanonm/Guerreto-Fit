@@ -11,103 +11,146 @@ model Customer {
   id           Int          @id @default(autoincrement())
   name         String
   sureName     String
-
-
   customerType CustomerType
-  dailyPass  DailyPass?
-  membership  Membership?
+  created_at   DateTime     @default(now())
+  created_by   String       @db.VarChar(36)
+  updated_at   DateTime     @updatedAt
+  updated_by   String       @db.VarChar(36)
+  dailyPass    DailyPass?
+  membership   Membership?
 
   @@map("customer")
 }
 
 model Membership {
-  id             Int               @id @default(autoincrement())
-  customerId     Int               @unique
-  servicePriceId Int    
-  email          String?           
+  id             Int              @id @default(autoincrement())
+  customerId     Int              @unique
+  servicePriceId Int
+  email          String?
   phone          String?
   startDate      DateTime
   endDate        DateTime
-  dni            String   
+  dni            String
   monthsToPay    Int
   totalAmout     Float
-
   status         MembershipStatus @default(ACTIVO)
-
-  customer       Customer          @relation(fields: [customerId], references: [id])
-  servicePrice   ServicePrices     @relation(fields: [servicePriceId], references: [id])
-  
-
+  created_at     DateTime         @default(now())
+  created_by     String           @db.VarChar(36)
+  updated_at     DateTime         @updatedAt
+  updated_by     String           @db.VarChar(36)
+  customer       Customer         @relation(fields: [customerId], references: [id])
+  servicePrice   ServicePrices    @relation(fields: [servicePriceId], references: [id])
 
   @@map("membership")
 }
 
 model DailyPass {
-  id             Int               @id @default(autoincrement())
-  customerId     Int               @unique
-  servicePriceId Int               
-  accessDate     DateTime          @default(now())
-
-  customer       Customer          @relation(fields: [customerId], references: [id])
-  servicePrice   ServicePrices     @relation(fields: [servicePriceId], references: [id])
+  id             Int           @id @default(autoincrement())
+  customerId     Int           @unique
+  servicePriceId Int
+  accessDate     DateTime      @default(now())
+  created_at     DateTime      @default(now())
+  created_by     String        @db.VarChar(36)
+  customer       Customer      @relation(fields: [customerId], references: [id])
+  servicePrice   ServicePrices @relation(fields: [servicePriceId], references: [id])
 
   @@map("dailypass")
 }
 
 model ServicePrices {
-  id          Int              @id @default(autoincrement())
-  serviceId Int
-  ammout Float   @default(0)
-  date DateTime @default(now())
-
-  service Services @relation(fields: [serviceId], references: [id])
+  id          Int          @id @default(autoincrement())
+  serviceId   Int
+  ammout      Float        @default(0)
+  date        DateTime     @default(now())
+  status      PricesStatus @default(ACTUAL)
+  created_at  DateTime     @default(now())
+  created_by  String       @db.VarChar(36)
   dailyPasses DailyPass[]
   memberships Membership[]
+  service     Services     @relation(fields: [serviceId], references: [id])
 
   @@map("service_prices")
 }
 
 model Services {
-  id Int                        @id @default(autoincrement())
-  serviceName String
-
+  id            Int             @id @default(autoincrement())
+  serviceName   String
+  created_at DateTime      @default(now())
+  created_by String        @db.VarChar(36)
+  updated_at DateTime      @updatedAt
+  updated_by String        @db.VarChar(36)
   servicePrices ServicePrices[]
 
   @@map("services")
 }
 
 model Person {
-  id Int                        @id @default(autoincrement())
-  name String
-  sureName String
-  age Int
-  email String?
-  phone String
+  id         Int       @id @default(autoincrement())
+  name       String
+  sureName   String
+  age        Int
+  email      String?
+  phone      String
+  created_at DateTime  @default(now())
+  created_by String    @db.VarChar(36)
+  updated_at DateTime  @updatedAt
+  updated_by String    @db.VarChar(36)
+  AppUser    AppUser[]
 
-  AppUser  AppUser[]
   @@map("person")
 }
-model AppUser {
-  id String @id @default(uuid())
-  accessName String
-  accessHash String
-  personId Int
-  roleId Int
-  create_at DateTime @default(now())
-  status AppUserStatus @default(ACTIVO)
 
-  person Person @relation(fields: [personId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
+model AppUser {
+  id         String        @id @default(uuid())
+  accessName String
+  personId   Int
+  roleId     Int
+  accessHash String
+  status     AppUserStatus @default(ACTIVO)
+  created_at DateTime      @default(now())
+  created_by String        @db.VarChar(36)
+  updated_at DateTime      @updatedAt
+  updated_by String        @db.VarChar(36)
+  person     Person        @relation(fields: [personId], references: [id])
+  role       Role          @relation(fields: [roleId], references: [id])
+
   @@map("appUser")
 }
 
 model Role {
-  id Int                        @id @default(autoincrement())
-  name String
-  AppUser  AppUser[] 
+  id             Int             @id @default(autoincrement())
+  name           String
+  created_at     DateTime        @default(now())
+  created_by     String          @db.VarChar(36)
+  description    String
+  status         Boolean
+  updated_at     DateTime        @updatedAt
+  updated_by     String          @db.VarChar(36)
+  AppUser        AppUser[]
+  rolePermissions RolePermission[]
 
   @@map("role")
 }
+model RolePermission {
+  id          Int       @id @default(autoincrement())
+  roleId      Int
+  permisionId Int
+  allowed     Boolean
+  permission   Permission @relation(fields: [permisionId], references: [id])
+  role        Role      @relation(fields: [roleId], references: [id])
+
+  @@map("role_permission")
+}
+model Permission {
+  id             Int             @id @default(autoincrement())
+  name           String
+  description    String
+  rolePermissions RolePermission[]
+
+  @@map("permission")
+}
+
+
 
 enum CustomerType {
   MEMBRESIA
@@ -123,4 +166,9 @@ enum MembershipStatus {
 enum AppUserStatus {
   ACTIVO
   INACTIVO
+}
+
+enum PricesStatus {
+  ACTUAL
+  ANTERIOR
 }

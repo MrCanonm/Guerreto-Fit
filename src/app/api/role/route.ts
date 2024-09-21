@@ -21,28 +21,29 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { serviceName } = body;
+  const { name, description, status } = body;
 
   const { accessName } = getLoggedUser();
-
-  const existingService = await prisma.services.findFirst({
-    where: { serviceName },
+  const existingRole = await prisma.role.findFirst({
+    where: { name },
   });
 
-  if (existingService) {
+  if (existingRole) {
     return NextResponse.json({ error: "Role already exists" }, { status: 400 });
   }
 
   try {
-    const newService = await prisma.services.create({
+    const newRole = await prisma.role.create({
       data: {
-        serviceName,
+        name,
+        description,
+        status,
         created_by: accessName,
         updated_by: accessName,
       },
     });
 
-    return NextResponse.json(newService, { status: 200 });
+    return NextResponse.json(newRole, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Error creating role" }, { status: 500 });

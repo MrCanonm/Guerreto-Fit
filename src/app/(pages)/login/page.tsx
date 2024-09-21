@@ -1,25 +1,28 @@
 "use client";
 
 import { useAuthService } from "@/services/auth";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Image from "next/image";
+import { useAuth } from "@/hooks/useAuth";
 
-const Home = () => {
+const Login = () => {
   const [accessName, setAccessName] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { login, loading } = useAuthService();
-  const router = useRouter();
+  const { refreshAuth } = useAuth();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     try {
       const response = await login({ accessName, password });
       if (response.message === "Inicio de sesión exitoso") {
-        // La cookie ya ha sido establecida por el backend
-        router.push("/home");
+        // Actualiza el estado de autenticación
+        await refreshAuth();
+        // Redirige al usuario a la página principal
+        //router.push("/home"); // Esto no funciona
+        window.location.href = "/home";
       }
     } catch (err) {
       setError("Usuario y/o contraseña incorrectos");
@@ -111,4 +114,4 @@ const Home = () => {
     </div>
   );
 };
-export default Home;
+export default Login;

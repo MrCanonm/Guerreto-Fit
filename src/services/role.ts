@@ -20,8 +20,7 @@ export async function getUserRole() {
     }
 
     const data = await response.json();
-    console.log("Role fetched:", data.role.name);
-    return data.role.name;
+    return data;
   } catch (error) {
     console.error("Error fetching user role:", error);
     throw error;

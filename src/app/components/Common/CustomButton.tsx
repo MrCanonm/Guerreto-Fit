@@ -8,6 +8,7 @@ interface ButtonProps {
   color?: "red" | "gray";
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 const CustomButton: React.FC<ButtonProps> = ({
@@ -16,6 +17,7 @@ const CustomButton: React.FC<ButtonProps> = ({
   color,
   onClick,
   className,
+  disabled = false,
 }) => {
   const baseClasses =
     "px-4 py-2 mb-2 rounded-md font-semibold transition-transform duration-300 transform shadow-custom hover:shadow-2xl hover:translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500";
@@ -44,6 +46,7 @@ const CustomButton: React.FC<ButtonProps> = ({
     <button
       className={`${baseClasses} ${variantClasses} ${className}`}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
