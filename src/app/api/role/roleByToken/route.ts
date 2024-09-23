@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { userId } = getLoggedUser();
 

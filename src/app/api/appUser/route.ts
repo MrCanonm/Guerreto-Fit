@@ -3,15 +3,22 @@ import { PrismaClient } from "@prisma/client";
 import { hash } from "bcrypt";
 import { AppUserStatus } from "@/app/components/AppUser/app-user-intertace";
 import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
+import { checkPermissions } from "@/middleaware/checkPermissions";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
-export const GET = async (req: NextRequest) => {
-  if (req.method !== "GET") {
-    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
-  }
+export const GET = async (request: NextRequest) => {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.VIEW_APPUSERS
+  );
 
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const appUsers = await prisma.appUser.findMany({
       include: { person: true, role: true },
@@ -26,8 +33,17 @@ export const GET = async (req: NextRequest) => {
   }
 };
 
-export const POST = async (req: NextRequest) => {
-  const body = await req.json();
+export const POST = async (request: NextRequest) => {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.CREATE_APPUSERS
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
+  const body = await request.json();
   const { accessName, accessHash, person, role } = body;
   const { accessName: loggedUser } = getLoggedUser();
 

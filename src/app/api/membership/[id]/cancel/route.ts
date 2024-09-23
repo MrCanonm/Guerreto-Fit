@@ -1,6 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { MembershipStatus } from "@/app/components/Customer/customerInterfaces";
+import { checkPermissions } from "@/middleaware/checkPermissions";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 
 const prisma = new PrismaClient();
 
@@ -10,9 +12,17 @@ interface Params {
   };
 }
 
-export async function PATCH(request: Request, { params }: Params) {
+export async function PATCH(request: NextRequest, { params }: Params) {
   const { id } = params; // Esto puede ser el customerId que llega en los params
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.EDIT_MEMBERSHIPS
+  );
 
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     // Actualiza el estado de la membresía a "CANCELADO" basado en customerId
     const updatedMembership = await prisma.membership.updateMany({

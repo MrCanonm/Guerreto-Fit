@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { checkPermissions } from "@/middleaware/checkPermissions";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 
 const prisma = new PrismaClient();
 
@@ -9,8 +11,17 @@ interface Params {
   };
 }
 
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: NextRequest, { params }: Params) {
   const { id } = params;
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.VIEW_ALLBILLS
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const customer = await prisma.customer.findUnique({
       where: { id: Number(id) },
@@ -32,11 +43,19 @@ export async function GET(request: Request, { params }: Params) {
 }
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
-  console.log("PATCH request received");
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.EDIT_MEMBERSHIPS
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
 
   try {
     const body = await request.json();

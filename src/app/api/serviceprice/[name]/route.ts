@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { checkPermissions } from "@/middleaware/checkPermissions";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 
 const prisma = new PrismaClient();
 interface Params {
@@ -7,9 +9,18 @@ interface Params {
     name: string;
   };
 }
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: NextRequest, { params }: Params) {
   const { name } = params;
   const today = new Date();
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.VIEW_SERVICEPRICES
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
 
   try {
     const servicePrice = await prisma.servicePrices.findFirst({

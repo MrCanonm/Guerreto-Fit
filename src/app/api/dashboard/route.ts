@@ -1,11 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { PermissionsDict } from "@/app/config/permissionsDict";
+import { checkPermissions } from "@/middleaware/checkPermissions";
 
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
-export const GET = async (req: NextRequest) => {
+export const GET = async (request: NextRequest) => {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.VIEW_DASBOARD
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const activeMemberships = await prisma.membership.findMany({
       include: { servicePrice: true },

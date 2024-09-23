@@ -1,7 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
 import { hash } from "bcrypt";
+import { checkPermissions } from "@/middleaware/checkPermissions";
+import { PermissionsDict } from "@/app/config/permissionsDict";
 
 const prisma = new PrismaClient();
 
@@ -10,8 +12,16 @@ interface Params {
     id: string;
   };
 }
-// Pasar usuarios a inactivos
-export async function PATCH(request: Request, { params }: Params) {
+export async function PATCH(request: NextRequest, { params }: Params) {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.EDIT_APPUSERS
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   const { id } = params;
 
   const body = await request.json();

@@ -1,11 +1,22 @@
 import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
+import { PermissionsDict } from "@/app/config/permissionsDict";
+import { checkPermissions } from "@/middleaware/checkPermissions";
 import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.VIEW_SERVICEPRICES
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const today = new Date();
 
@@ -42,7 +53,16 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.MANAGE_SERVICEPRICES
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const body = await request.json();
     const { serviceId, ammout } = body;

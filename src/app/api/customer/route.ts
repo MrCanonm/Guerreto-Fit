@@ -1,12 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import {
   CustomerType,
   MembershipStatus,
 } from "@/app/components/Customer/customerInterfaces";
 import { getLoggedUser } from "@/app/components/utils/getLoggedUser";
+import { checkPermissions } from "@/middleaware/checkPermissions";
+import { PermissionsDict } from "@/app/config/permissionsDict";
+
 const prisma = new PrismaClient();
-export async function GET() {
+
+export async function GET(request: NextRequest) {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.VIEW_ALLBILLS
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const customers = await prisma.customer.findMany({
       include: {
@@ -31,7 +44,16 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  const permissionCheck = await checkPermissions(
+    request,
+    PermissionsDict.CREATE_BILLS
+  );
+
+  // Asegúrate de que el permiso no este permitido
+  if (permissionCheck instanceof NextResponse) {
+    return permissionCheck;
+  }
   try {
     const body = await request.json();
     const { name, sureName, customerType, dailyPass, membership } = body;
