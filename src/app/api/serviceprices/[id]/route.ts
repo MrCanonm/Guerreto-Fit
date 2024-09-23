@@ -16,7 +16,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
   const permissionCheck = await checkPermissions(
     request,
-    PermissionsDict.CREATE_SERVICEPRICES
+    PermissionsDict.MANAGE_SERVICEPRICES
   );
 
   // Asegúrate de que el permiso no este permitido
