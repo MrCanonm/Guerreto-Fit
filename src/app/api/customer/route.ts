@@ -98,9 +98,10 @@ export async function POST(request: NextRequest) {
       } else if (customerType === CustomerType.MEMBRESIA && membership) {
         const existingMembership = await prisma.membership.findFirst({
           where: {
+            status: MembershipStatus.ACTIVO,
             OR: [
-              { dni: membership.dni, status: MembershipStatus.ACTIVO },
-              { email: membership.email, status: MembershipStatus.ACTIVO },
+              ...(membership.dni ? [{ dni: membership.dni }] : []), // Solo se incluye si dni no es undefined o null
+              ...(membership.email ? [{ email: membership.email }] : []), // Solo se incluye si email no es undefined o null
             ],
           },
         });
@@ -135,9 +136,9 @@ export async function POST(request: NextRequest) {
 
         const createdMembership = await prisma.membership.create({
           data: {
-            email: membership.email,
-            phone: membership.phone,
-            dni: membership.dni,
+            email: membership.email || undefined,
+            phone: membership.phone || undefined,
+            dni: membership.dni || undefined,
             servicePriceId: servicePrice.id,
             monthsToPay: membership.monthsToPay,
             totalAmout: totalAmount,
