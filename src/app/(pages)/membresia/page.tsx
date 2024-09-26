@@ -66,7 +66,7 @@ const MembershipCustomerPage: React.FC = () => {
   useEffect(() => {
     if (searchQuery && customers) {
       const filtered = customers.filter((customer) => {
-        const dni = customer.membership?.dni.toLowerCase() || "";
+        const dni = customer.membership?.dni?.toLowerCase() || "";
         const name = customer.name.toLowerCase();
         const sureName = customer.sureName.toLowerCase();
         const lowerCaseQuery = searchQuery.toLowerCase();
