@@ -16,7 +16,6 @@ import { useAuth } from "@/hooks/useAuth";
 import Login from "./(pages)/login/page";
 import LoadingSpinner from "./components/Common/Loading";
 import { PermissionsDict } from "./config/permissionsDict";
-import { permission } from "process";
 
 const allNavItems: NavItem[] = [
   {

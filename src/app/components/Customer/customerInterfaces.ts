@@ -21,7 +21,7 @@ export type Customer = {
 export type Membership = {
   id: number;
   customerId: number;
-  dni: string;
+  dni?: string;
   email?: string;
   phone?: string;
   startDate: Date;

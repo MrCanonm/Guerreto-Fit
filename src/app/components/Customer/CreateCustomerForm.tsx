@@ -152,11 +152,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <label className="block">Cedula</label>
               <input
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.dni", {
-                  minLength: 11,
-                  maxLength: 11,
-                  required: "Este campo es requerido",
-                })}
+                {...register("membership.dni", {})}
                 type="text"
               />
               {errors.membership?.dni && (
@@ -184,11 +180,7 @@ const CreateCustomerForm: React.FC<{ onSubmit: SubmitHandler<Customer> }> = ({
               <label className="block">Telefono</label>
               <input
                 className="w-full p-2 border border-gray-300 focus:outline-none focus:border-blue-500"
-                {...register("membership.phone", {
-                  minLength: 10,
-                  maxLength: 10,
-                  required: "Este campo es requerido",
-                })}
+                {...register("membership.phone", {})}
                 type="text"
               />
               {errors.membership?.phone && (

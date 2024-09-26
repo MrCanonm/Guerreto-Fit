@@ -30,7 +30,7 @@ model Membership {
   phone          String?
   startDate      DateTime
   endDate        DateTime
-  dni            String
+  dni            String?
   monthsToPay    Int
   totalAmout     Float
   status         MembershipStatus @default(ACTIVO)
