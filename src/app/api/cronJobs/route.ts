@@ -1,25 +1,13 @@
-// pages/api/services/cronJob.ts
 import { MembershipStatus } from "@/app/components/Customer/customerInterfaces";
 import { PrismaClient } from "@prisma/client";
-import cron from "node-cron";
 
 const prisma = new PrismaClient();
 
-let cronJobStarted = false;
+export const dynamic = "force-dynamic";
 
-export async function POST(request: Request) {
-  const today = new Date();
-  if (!cronJobStarted) {
-    cron.schedule("0 5 * * *", () => {
-      console.log(
-        `running a task everyday at ${today.getHours()}:${today.getMinutes()}`
-      );
-      updateExpiredMemberships();
-    });
-    cronJobStarted = true;
-  }
-
-  return new Response(JSON.stringify({ message: "Cron job started" }), {
+export async function GET(request: Request) {
+  await updateExpiredMemberships();
+  return new Response(JSON.stringify({ message: "Cron job executed" }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
@@ -55,7 +43,7 @@ async function updateExpiredMemberships() {
     });
 
     console.log(
-      `Memberships updated to PENDIENTE ${membershipsToUpdate.length}`
+      `Memberships updated to VENCIDA: ${membershipsToUpdate.length}`
     );
   } catch (error) {
     console.error("Error updating expired memberships:", error);

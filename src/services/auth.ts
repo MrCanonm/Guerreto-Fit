@@ -26,9 +26,9 @@ export const useAuthService = () => {
         throw new Error(data.error || "An error occurred during login");
       }
 
-      await fetch("/api/cronJobs", {
-        method: "POST",
-      });
+      // await fetch("/api/cronJobs", {
+      //   method: "POST",
+      // });
 
       setLoading(false);
       return data;
